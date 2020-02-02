@@ -54,8 +54,8 @@
   },
   "variables": {
     "PartsUnlimitedServerName": "[toLower(parameters('PUL_ServerName'))]",
-    "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'Dev')]",
-    "PartsUnlimitedServerNameQA": "[concat(variables('PartsUnlimitedServerName'), 'QA')]"
+    "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'dev')]",
+    "PartsUnlimitedServerNameQA": "[concat(variables('PartsUnlimitedServerName'), 'qa')]"
   },
   "resources": [
     {
