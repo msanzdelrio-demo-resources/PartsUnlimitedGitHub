@@ -217,7 +217,7 @@
             }
         },
         {
-            "name": "[concat(parameters('WebsiteName'), '-StagingInsights')]",
+            "name": "[concat(parameters('WebsiteName'), '-QAInsights')]",
             "type": "Microsoft.Insights/components",
             "location": "eastus",
             "apiVersion": "2014-04-01",
@@ -225,7 +225,7 @@
                 "displayName": "insightsComponents"
             },
             "properties": {
-                "ApplicationId": "[concat(parameters('WebsiteName'), '-StagingInsights')]"
+                "ApplicationId": "[concat(parameters('WebsiteName'), '-QAInsights')]"
             }
         },
         {
@@ -388,7 +388,7 @@
                 "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameQA'))]",
                 "[resourceId('Microsoft.Insights/components', concat(parameters('WebsiteName'), '-Insights'))]",
                 "[resourceId('Microsoft.Insights/components', concat(parameters('WebSiteName'), '-DevInsights'))]",
-                "[resourceId('Microsoft.Insights/components', concat(parameters('WebSiteName'), '-StagingInsights'))]"
+                "[resourceId('Microsoft.Insights/components', concat(parameters('WebSiteName'), '-QAInsights'))]"
             ],
             "location": "[resourceGroup().location]",
             "apiVersion": "2014-06-01",
@@ -477,7 +477,7 @@
                     ]
                 },
                 {
-                    "name": "Staging",
+                    "name": "QA",
                     "type": "slots",
                     "location": "[resourceGroup().location]",
                     "apiVersion": "2014-11-01",
@@ -492,7 +492,7 @@
                             "type": "config",
                             "apiVersion": "2014-11-01",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites/slots', parameters('WebSiteName'), 'Staging')]"
+                                "[resourceId('Microsoft.Web/sites/slots', parameters('WebSiteName'), 'QA')]"
                             ],
                             "properties": {
                                 "DefaultConnectionString": {
@@ -506,10 +506,10 @@
                             "type": "config",
                             "apiVersion": "2014-11-01",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Web/sites/slots', parameters('WebSiteName'), 'Staging')]"
+                                "[resourceId('Microsoft.Web/sites/slots', parameters('WebSiteName'), 'QA')]"
                             ],
                             "properties": {
-                                "Keys:ApplicationInsights:InstrumentationKey": "[reference(concat('Microsoft.Insights/components/', parameters('WebsiteName'), '-StagingInsights')).InstrumentationKey]"
+                                "Keys:ApplicationInsights:InstrumentationKey": "[reference(concat('Microsoft.Insights/components/', parameters('WebsiteName'), '-QAInsights')).InstrumentationKey]"
                             }
                         }
                     ]
