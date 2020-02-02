@@ -52,7 +52,7 @@
     "variables": {
         "PartsUnlimitedServerName": "[toLower(parameters('PUL_ServerName'))]",
         "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'dev')]",
-        "PartsUnlimitedServerNameStage": "[concat(variables('PartsUnlimitedServerName'), 'stage')]"
+        "PartsUnlimitedServerNameQA": "[concat(variables('PartsUnlimitedServerName'), 'QA')]"
     },
     "resources": [
         {
@@ -147,7 +147,7 @@
             ]
         },
         {
-            "name": "[variables('PartsUnlimitedServerNameStage')]",
+            "name": "[variables('PartsUnlimitedServerNameQA')]",
             "type": "Microsoft.Sql/servers",
             "location": "[resourceGroup().location]",
             "apiVersion": "2014-04-01-preview",
@@ -161,12 +161,12 @@
             },
             "resources": [
                 {
-                    "name": "[concat('AllowAllIps', variables('PartsUnlimitedServerNameStage'))]",
+                    "name": "[concat('AllowAllIps', variables('PartsUnlimitedServerNameQA'))]",
                     "type": "firewallrules",
                     "location": "[resourceGroup().location]",
                     "apiVersion": "2014-04-01-preview",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameStage'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameQA'))]"
                     ],
                     "properties": {
                         "startIpAddress": "0.0.0.0",
@@ -179,7 +179,7 @@
                     "location": "[resourceGroup().location]",
                     "apiVersion": "2014-04-01-preview",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameStage'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameQA'))]"
                     ],
                     "tags": {
                         "displayName": "PartsUnlimitedDB"
@@ -385,7 +385,7 @@
                 "[resourceId('Microsoft.Web/serverfarms', parameters('PUL_HostingPlanName'))]",
                 "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerName'))]",
                 "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameDev'))]",
-                "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameStage'))]",
+                "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameQA'))]",
                 "[resourceId('Microsoft.Insights/components', concat(parameters('WebsiteName'), '-Insights'))]",
                 "[resourceId('Microsoft.Insights/components', concat(parameters('WebSiteName'), '-DevInsights'))]",
                 "[resourceId('Microsoft.Insights/components', concat(parameters('WebSiteName'), '-StagingInsights'))]"
@@ -496,7 +496,7 @@
                             ],
                             "properties": {
                                 "DefaultConnectionString": {
-                                    "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('PartsUnlimitedServerNameStage'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('PUL_DBName'), ';User Id=', parameters ('PUL_DBLogin'), '@', variables('PartsUnlimitedServerNameStage'), ';Password=', parameters('PUL_DBPasswordForTest'), ';')]",
+                                    "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('PartsUnlimitedServerNameQA'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('PUL_DBName'), ';User Id=', parameters ('PUL_DBLogin'), '@', variables('PartsUnlimitedServerNameQA'), ';Password=', parameters('PUL_DBPasswordForTest'), ';')]",
                                     "type": "SQLAzure"
                                 }
                             }
