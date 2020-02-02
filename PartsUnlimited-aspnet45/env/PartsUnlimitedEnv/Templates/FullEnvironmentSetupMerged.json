@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "WebsiteName": {
@@ -47,11 +47,14 @@
         "EnableRules": {
             "type": "bool",
             "defaultValue": false
-        }      
+        },
+        "CICDEngineName": {
+        "type": "string"
+        }
     },
     "variables": {
         "PartsUnlimitedServerName": "[toLower(parameters('PUL_ServerName'))]",
-        "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'dev')]",
+        "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'Dev')]",
         "PartsUnlimitedServerNameQA": "[concat(variables('PartsUnlimitedServerName'), 'QA')]"
     },
     "resources": [
@@ -61,7 +64,8 @@
             "location": "[resourceGroup().location]",
             "apiVersion": "2014-04-01-preview",
             "tags": {
-                "displayName": "PartsUnlimitedServer"
+                "displayName": "PartsUnlimitedServer",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "administratorLogin": "[parameters('PUL_DBLogin')]",
@@ -90,7 +94,8 @@
                         "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerName'))]"
                     ],
                     "tags": {
-                        "displayName": "PartsUnlimitedDB"
+                        "displayName": "PartsUnlimitedDB",
+                        "CICDEngine": "[parameters('CICDEngineName')]"
                     },
                     "properties": {
                         "collation": "[parameters('PUL_DBCollation')]",
@@ -107,7 +112,8 @@
             "apiVersion": "2014-04-01-preview",
             "dependsOn": [ ],
             "tags": {
-                "displayName": "PartsUnlimitedServer"
+                "displayName": "PartsUnlimitedServer",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "administratorLogin": "[parameters('PUL_DBLogin')]",
@@ -136,7 +142,8 @@
                         "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameDev'))]"
                     ],
                     "tags": {
-                        "displayName": "PartsUnlimitedDB"
+                        "displayName": "PartsUnlimitedDB",
+                        "CICDEngine": "[parameters('CICDEngineName')]"
                     },
                     "properties": {
                         "collation": "[parameters('PUL_DBCollation')]",
@@ -153,7 +160,8 @@
             "apiVersion": "2014-04-01-preview",
             "dependsOn": [ ],
             "tags": {
-                "displayName": "PartsUnlimitedServer"
+                "displayName": "PartsUnlimitedServer",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "administratorLogin": "[parameters('PUL_DBLogin')]",
@@ -182,7 +190,8 @@
                         "[resourceId('Microsoft.Sql/servers', variables('PartsUnlimitedServerNameQA'))]"
                     ],
                     "tags": {
-                        "displayName": "PartsUnlimitedDB"
+                        "displayName": "PartsUnlimitedDB",
+                        "CICDEngine": "[parameters('CICDEngineName')]"
                     },
                     "properties": {
                         "collation": "[parameters('PUL_DBCollation')]",
@@ -198,7 +207,8 @@
             "location": "eastus",
             "apiVersion": "2014-04-01",
             "tags": {
-                "displayName": "insightsComponents"
+                "displayName": "insightsComponents",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "ApplicationId": "[concat(parameters('WebsiteName'), '-Insights')]"
@@ -210,7 +220,8 @@
             "location": "eastus",
             "apiVersion": "2014-04-01",
             "tags": {
-                "displayName": "insightsComponents"
+                "displayName": "insightsComponents",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "ApplicationId": "[concat(parameters('WebsiteName'), '-DevInsights')]"
@@ -222,7 +233,8 @@
             "location": "eastus",
             "apiVersion": "2014-04-01",
             "tags": {
-                "displayName": "insightsComponents"
+                "displayName": "insightsComponents",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "ApplicationId": "[concat(parameters('WebsiteName'), '-QAInsights')]"
@@ -235,7 +247,8 @@
             "apiVersion": "2014-06-01",
             "dependsOn": [ ],
             "tags": {
-                "displayName": "PartsUnlimitedHostingPlan"
+                "displayName": "PartsUnlimitedHostingPlan",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[parameters('PUL_HostingPlanName')]",
@@ -254,7 +267,8 @@
             ],
             "tags": {
                 "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('PUL_HostingPlanName'))]": "Resource",
-                "displayName": "WebsiteHostingPlanAutoScale"
+                "displayName": "WebsiteHostingPlanAutoScale",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[concat(parameters('PUL_HostingPlanName'), '-', resourceGroup().name)]",
@@ -320,7 +334,8 @@
             ],
             "tags": {
                 "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('PUL_HostingPlanName'))]": "Resource",
-                "displayName": "WebsiteHostingPlanAlertRuleCPUHigh"
+                "displayName": "WebsiteHostingPlanAlertRuleCPUHigh",
+                "CICDEngine": "[parameters('CICDEngineName')]"                
             },
             "properties": {
                 "name": "[concat('CPUHigh ', parameters('PUL_HostingPlanName'))]",
@@ -354,7 +369,8 @@
             ],
             "tags": {
                 "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('PUL_HostingPlanName'))]": "Resource",
-                "displayName": "WebsiteHostingPlanAlertRuleLongHttpQueue"
+                "displayName": "WebsiteHostingPlanAlertRuleLongHttpQueue",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[concat('LongHttpQueue ', parameters('PUL_HostingPlanName'))]",
@@ -394,7 +410,8 @@
             "apiVersion": "2014-06-01",
             "tags": {
                 "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('PUL_HostingPlanName'))]": "Resource",
-                "displayName": "PartsUnlimitedWebsite"
+                "displayName": "PartsUnlimitedWebsite",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[parameters('WebsiteName')]",
@@ -526,7 +543,8 @@
             ],
             "tags": {
                 "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('WebsiteName'))]": "Resource",
-                "displayName": "WebsiteAlertRuleServerErrors"
+                "displayName": "WebsiteAlertRuleServerErrors",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[concat('ServerErrors ', parameters('WebsiteName'))]",
@@ -559,7 +577,8 @@
                 "[resourceId('Microsoft.Web/sites', parameters('WebsiteName'))]"
             ],
             "tags": {
-                "displayName": "WebsiteAlertRuleForbiddenRequests"
+                "displayName": "WebsiteAlertRuleForbiddenRequests",
+                "CICDEngine": "[parameters('CICDEngineName')]"
             },
             "properties": {
                 "name": "[concat('ForbiddenRequests ', parameters('WebsiteName'))]",
