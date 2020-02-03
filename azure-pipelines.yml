@@ -15,6 +15,18 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'ARM Template Validation'
+  inputs:
+    azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+    subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
+    resourceGroupName: '$(ResourceGroupName)'
+    location: 'West US 2'
+    csmFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
+    csmParametersFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
+    overrideParameters: '-WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan) -CICDEngineName "$(CICDEngine)"'
+    deploymentMode: Validation
+    
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
