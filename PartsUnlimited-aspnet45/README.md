@@ -1,3 +1,7 @@
+##Azure DevOps Status
+[![Board Status](https://dev.azure.com/daveburnisonms/9e115ed7-bf32-4a6f-b516-88552f9357de/c676d0f2-9739-40fa-ac88-ce0f72b910fc/_apis/work/boardbadge/edb6eb68-74ba-4820-9cba-c1d5d01100b8?columnOptions=1)](https://dev.azure.com/daveburnisonms/9e115ed7-bf32-4a6f-b516-88552f9357de/_boards/board/t/c676d0f2-9739-40fa-ac88-ce0f72b910fc/Microsoft.RequirementCategory/)
+[![Build Status](https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub/_apis/build/status/PartsUnlimited-Classic?branchName=master)](https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub/_build/latest?definitionId=99&branchName=master)
+
 # Parts Unlimited#
 
 Parts Unlimited is an example eCommerce website site based for training purposes on the website described in chapters 31-35 of The Phoenix Project, by Gene Kim, Kevin Behr and George Spafford, © 2013 IT Revolution Press LLC, Portland, OR. Resemblance to “Project Unicorn” in the novel is intentional; resemblance to any real company is purely coincidental.
