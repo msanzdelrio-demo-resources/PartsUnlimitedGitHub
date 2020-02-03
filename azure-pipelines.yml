@@ -14,50 +14,56 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'ARM Template Validation'
-  inputs:
-    azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
-    subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
-    resourceGroupName: '$(ResourceGroupName)'
-    location: 'West US 2'
-    csmFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
-    csmParametersFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
-    overrideParameters: '-WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan) -CICDEngineName "$(CICDEngine)"'
-    deploymentMode: Validation
+stages:
+- stage: CI
+  jobs:
+  - job: Build
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'ARM Template Validation'
+      inputs:
+        azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+        subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
+        resourceGroupName: '$(ResourceGroupName)'
+        location: 'West US 2'
+        csmFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
+        csmParametersFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
+        overrideParameters: '-WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan) -CICDEngineName "$(CICDEngine)"'
+        deploymentMode: Validation
     
-- task: NuGetToolInstaller@1
+    - task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  displayName: 'Test Assemblies'
-  inputs:
-    runInParallel: false
-    codeCoverageEnabled: true
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'   
+  - job: Test
+    steps:
+    - task: VSTest@2
+      displayName: 'Test Assemblies'
+      inputs:
+        runInParallel: false
+        codeCoverageEnabled: true
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'   
 
-steps:
-- task: CopyFiles@2
-  displayName: 'Copy Files'
-  inputs:
-    SourceFolder: '$(build.sourcesdirectory)'
-    Contents: '**/*.json'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+  - job: Package
+    steps:
+    - task: CopyFiles@2
+      displayName: 'Copy Files'
+      inputs:
+        SourceFolder: '$(build.sourcesdirectory)'
+        Contents: '**/*.json'
+        TargetFolder: '$(build.artifactstagingdirectory)'
 
-steps:
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
