@@ -463,6 +463,10 @@
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', parameters('WebSiteName'))]"
           ],
+          "tags": {
+            "displayName": "[concat(parameters('WebSiteName'), '-Dev')]",
+            "CICDEngine": "[parameters('CICDEngineName')]"
+          },
           "properties": {
           },
           "resources": [
@@ -501,6 +505,10 @@
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', parameters('WebSiteName'))]"
           ],
+          "tags": {
+            "displayName": "[concat(parameters('WebSiteName'), '-QA')]",
+            "CICDEngine": "[parameters('CICDEngineName')]"
+          },
           "properties": {
           },
           "resources": [
