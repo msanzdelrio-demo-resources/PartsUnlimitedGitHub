@@ -17,7 +17,7 @@ variables:
 stages:
 - stage: CI
   jobs:
-  - job: Build
+  - job: CI
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template Validation'
@@ -44,8 +44,6 @@ stages:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
 
-  - job: Test
-    steps:
     - task: VSTest@2
       displayName: 'Test Assemblies'
       inputs:
@@ -54,8 +52,6 @@ stages:
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'   
 
-  - job: Package
-    steps:
     - task: CopyFiles@2
       displayName: 'Copy Files'
       inputs:
