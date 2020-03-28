@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Linq;
 
-namespace FabrikamFiber.SeleniumTests
+namespace PartsUnlimited.SeleniumTests
 {
     [TestClass]	
     public class PartsUnlimitedTests

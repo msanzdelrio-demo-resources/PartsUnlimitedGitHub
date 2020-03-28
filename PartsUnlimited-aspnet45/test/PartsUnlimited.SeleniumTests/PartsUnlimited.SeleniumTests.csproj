@@ -6,8 +6,8 @@
     <ProjectGuid>{8BA1E3A6-DD40-4534-B987-712B6A6E1D02}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FabrikamFiber.SeleniumTests</RootNamespace>
-    <AssemblyName>FabrikamFiber.SeleniumTests</AssemblyName>
+    <RootNamespace>PartsUnlimited.SeleniumTests</RootNamespace>
+    <AssemblyName>PartsUnlimited.SeleniumTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
