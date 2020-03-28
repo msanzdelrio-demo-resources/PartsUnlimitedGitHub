@@ -53,13 +53,23 @@ stages:
         configuration: '$(buildConfiguration)'   
 
     - task: CopyFiles@2
-      displayName: 'Copy Files'
+      displayName: 'Copy ARM Templates to: $(build.artifactstagingdirectory)'
       inputs:
         SourceFolder: '$(build.sourcesdirectory)'
         Contents: '**/*.json'
         TargetFolder: '$(build.artifactstagingdirectory)'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+    - task: CopyFiles@2
+      displayName: 'Copy Automated Tests to: $(build.artifactstagingdirectory)'
+      inputs:
+        SourceFolder: '$(build.sourcesdirectory)'
+        Contents: '**\bin\$(buildConfiguration)\**'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact'
       inputs:
         PathtoPublish: '$(build.artifactstagingdirectory)'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
