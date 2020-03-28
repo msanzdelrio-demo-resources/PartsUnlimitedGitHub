@@ -6,8 +6,7 @@ using System.Linq;
 
 namespace FabrikamFiber.SeleniumTests
 {
-    [TestClass]
-	[Ignore]
+    [TestClass]	
     public class PartsUnlimitedTests
     {
         static IWebDriver driver;
@@ -27,7 +26,7 @@ namespace FabrikamFiber.SeleniumTests
         [TestMethod]
         public void TestShoppingCart()
         {
-            var homeUrl = "http://cdrm-pu-demo-dev.azurewebsites.net";
+            var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
             driver.Navigate().GoToUrl($"{homeUrl}/ShoppingCart");
 
             // check that the cart is empty
@@ -63,7 +62,7 @@ namespace FabrikamFiber.SeleniumTests
         [TestMethod]
         public void TestSearch()
         {
-            driver.Navigate().GoToUrl("http://cdrm-pu-demo-dev.azurewebsites.net/");
+            driver.Navigate().GoToUrl("https://dabu-partsunlimited-qa.azurewebsites.net/");
             driver.FindElement(By.Id("search-box")).SendKeys("oil");
             driver.FindElement(By.Id("search-link")).Click();
 
