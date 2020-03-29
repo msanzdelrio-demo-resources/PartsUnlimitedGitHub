@@ -18,6 +18,7 @@ namespace PartsUnlimited.UnitTests.Controllers
     public class HomeControllerTests
     {
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public void Home_Index()
         {
             // arrange

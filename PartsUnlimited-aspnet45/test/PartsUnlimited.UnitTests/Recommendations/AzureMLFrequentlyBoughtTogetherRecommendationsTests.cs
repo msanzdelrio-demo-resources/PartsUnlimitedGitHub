@@ -16,6 +16,7 @@ namespace PartsUnlimited.UnitTests.Recommendations
     public class AzureMLFrequentlyBoughtTogetherRecommendationsTests
     {
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task AzureMLRecommendation_Exception()
         {
             var mockClient = new Mock<IHttpClient>();
@@ -32,6 +33,7 @@ namespace PartsUnlimited.UnitTests.Recommendations
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task AzureMLRecommendation_Result()
         {
             var mockClient = new Mock<IHttpClient>();
@@ -46,6 +48,7 @@ namespace PartsUnlimited.UnitTests.Recommendations
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task AzureMLRecommendation_NoResult()
         {
             var mockClient = new Mock<IHttpClient>();
