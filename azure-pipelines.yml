@@ -47,10 +47,15 @@ stages:
     - task: VSTest@2
       displayName: 'Test Assemblies'
       inputs:
+        runOnlyImpactedTests: false
         runInParallel: false
         codeCoverageEnabled: true
+        testRunTitle: 'Unit Tests'
+        testFiltercriteria: 'TestCategory=Unit Tests'
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'   
+        diagnosticsEnabled: true
+      continueOnError: true
 
     - task: CopyFiles@2
       displayName: 'Copy ARM Templates to: $(build.artifactstagingdirectory)'
