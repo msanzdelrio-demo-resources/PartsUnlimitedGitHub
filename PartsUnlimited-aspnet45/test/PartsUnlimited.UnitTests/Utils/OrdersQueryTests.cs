@@ -13,6 +13,7 @@ namespace PartsUnlimited.UnitTests.Utils
     public class OrdersQueryTests
     {
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task OrdersQuery_IndexHelperWithNoUsername()
         {
             var ordersQuery = new OrdersQuery(new MockDataContext());
@@ -22,6 +23,7 @@ namespace PartsUnlimited.UnitTests.Utils
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task OrdersQuery_IndexHelperWithUsername()
         {
             var ordersQuery = new OrdersQuery(new MockDataContext());

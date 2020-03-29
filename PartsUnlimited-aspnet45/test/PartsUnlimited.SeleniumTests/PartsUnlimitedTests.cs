@@ -24,6 +24,7 @@ namespace PartsUnlimited.SeleniumTests
         }
 
         [TestMethod]
+        [TestCategory("UITests")]
         public void TestShoppingCart()
         {
             var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
@@ -60,6 +61,7 @@ namespace PartsUnlimited.SeleniumTests
         }
 
         [TestMethod]
+        [TestCategory("UITests")]
         public void TestSearch()
         {
             driver.Navigate().GoToUrl("https://dabu-partsunlimited-qa.azurewebsites.net/");

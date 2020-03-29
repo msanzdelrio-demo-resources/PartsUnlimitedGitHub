@@ -13,6 +13,7 @@ namespace PartsUnlimited.UnitTests.ProductSearch
     public class ProductSearchTests
     {
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task ProductSearch_TestStringExistingProduct()
         {
             var prodSearch = new StringContainsProductSearch(new MockDataContext());
@@ -22,6 +23,7 @@ namespace PartsUnlimited.UnitTests.ProductSearch
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task ProductSearch_TestStringExistingProductPartial()
         {
             var prodSearch = new StringContainsProductSearch(new MockDataContext());
@@ -30,6 +32,7 @@ namespace PartsUnlimited.UnitTests.ProductSearch
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task ProductSearch_TestStringNoHit()
         {
             var prodSearch = new StringContainsProductSearch(new MockDataContext());

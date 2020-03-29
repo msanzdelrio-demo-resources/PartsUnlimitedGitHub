@@ -20,6 +20,7 @@ namespace PartsUnlimited.UnitTests.Controllers
     public class OrdersControllerTests
     {
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task Order_Index()
         {
             // arrange
@@ -47,6 +48,7 @@ namespace PartsUnlimited.UnitTests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task Order_DetailWithNullId()
         {
             // arrange
@@ -69,6 +71,7 @@ namespace PartsUnlimited.UnitTests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task Order_DetailWithUserMismatch()
         {
             // arrange
@@ -98,6 +101,7 @@ namespace PartsUnlimited.UnitTests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task Order_DetailWithNoDetails()
         {
             // arrange
@@ -139,6 +143,7 @@ namespace PartsUnlimited.UnitTests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("Unit Tests")]
         public async Task Order_DetailWithOrderDetails()
         {
             // arrange
