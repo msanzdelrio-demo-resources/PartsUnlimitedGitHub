@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace PartsUnlimited.SeleniumTests
 {
-    [TestClass]	
+    [TestClass]
     public class PartsUnlimitedTests
     {
-        static IWebDriver driver;
+        static IWebDriver driver;        
 
         [AssemblyInitialize]
         public static void Setup(TestContext context)
@@ -24,7 +24,7 @@ namespace PartsUnlimited.SeleniumTests
         }
 
         [TestMethod]
-        [TestCategory("UITests")]
+        [TestCategory("L1UITests")]
         public void TestShoppingCart()
         {
             var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
@@ -61,7 +61,7 @@ namespace PartsUnlimited.SeleniumTests
         }
 
         [TestMethod]
-        [TestCategory("UITests")]
+        [TestCategory("L1UITests")]
         public void TestSearch()
         {
             driver.Navigate().GoToUrl("https://dabu-partsunlimited-qa.azurewebsites.net/");
@@ -69,6 +69,22 @@ namespace PartsUnlimited.SeleniumTests
             driver.FindElement(By.Id("search-link")).Click();
 
             Assert.AreEqual(3, driver.FindElement(By.Id("search-page")).FindElements(By.ClassName("list-item-part")).Count);
+        }
+
+        [TestMethod]
+        [TestCategory("L2UITests")]
+        public void GenerateException()
+        {
+            var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
+
+            // go to a category that does not exist
+            driver.Navigate().GoToUrl($"{homeUrl}/Store/Browse?CategoryId=99");
+
+            // find the 1st element
+            var item = driver.FindElements(By.ClassName("list-item-part")).First();
+            var itemName = item.FindElement(By.TagName("h4")).Text;
+            var price = item.FindElement(By.TagName("h5")).Text;
+            Assert.AreEqual(price, "300.00");
         }
     }
 }
