@@ -14,6 +14,9 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
+###################################################################
+# CI Stage                                                        #
+###################################################################
 stages:
 - stage: CI
   jobs:
@@ -82,6 +85,9 @@ stages:
     - publish: $(build.artifactstagingdirectory)
       artifact: $(ArtifactName)
 
+###################################################################
+# Dev Stage                                                       #
+###################################################################
 - stage: Dev
   displayName: Dev
   dependsOn: CI
@@ -115,6 +121,7 @@ stages:
               csmParametersFile: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
               overrideParameters: '-CICDEngineName "$(CICDEngine)" -WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan)'
               deploymentMode: 'Incremental'
+
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
@@ -155,6 +162,9 @@ stages:
               diagnosticsEnabled: true
             continueOnError: true
 
+###################################################################
+# QA Stage                                                        #
+###################################################################
 - stage: QA
   displayName: QA
   dependsOn: Dev
@@ -214,6 +224,9 @@ stages:
               diagnosticsEnabled: true
             continueOnError: true
 
+###################################################################
+# Production  Stage                                               #
+###################################################################
 - stage: Production
   displayName: Production
   dependsOn: QA
