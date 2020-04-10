@@ -47,13 +47,19 @@ stages:
     - task: VSTest@2
       displayName: 'Test Assemblies'
       inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\*test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        testFiltercriteria: 'TestCategory=Unit Tests'
         runOnlyImpactedTests: false
         runInParallel: false
         codeCoverageEnabled: true
-        testRunTitle: 'Unit Tests'
-        testFiltercriteria: 'TestCategory=Unit Tests'
+        testRunTitle: '01 Unit Tests'
         platform: '$(buildPlatform)'
-        configuration: '$(buildConfiguration)'   
+        configuration: '$(buildConfiguration)'
         diagnosticsEnabled: true
       continueOnError: true
 
@@ -118,6 +124,7 @@ stages:
               searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
               testFiltercriteria: 'TestCategory=L1UITests'
               uiTests: true
+              testRunTitle: '02 Level 1 UI Tests'
               diagnosticsEnabled: true
             continueOnError: true
 
@@ -163,6 +170,7 @@ stages:
               searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
               testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
               uiTests: true
+              testRunTitle: '03 Level 2 UI Tests'
               diagnosticsEnabled: true
             continueOnError: true
 
