@@ -17,7 +17,7 @@ variables:
 stages:
 - stage: CI
   jobs:
-  - job: CI
+  - job: CI    
     steps:
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template Validation'
@@ -106,3 +106,32 @@ stages:
               SlotName: '$(Slot)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
+- stage: QA
+  displayName: QA
+  dependsOn: CI
+  variables:
+    slot: QA
+
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    # creates an environment if it doesn't exist
+    environment: $(slot)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - download: current
+            artifact: $(ArtifactName)
+
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              appType: 'webApp'
+              WebAppName: 'dabu-PartsUnlimited'
+              deployToSlotOrASE: true
+              ResourceGroupName: '$(ResourceGroupName)'
+              SlotName: '$(Slot)'
+              packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
