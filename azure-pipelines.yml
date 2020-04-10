@@ -107,19 +107,19 @@ stages:
               SlotName: '$(Slot)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
-- task: VSTest@2
-  displayName: 'Selenium UI Tests'
-  inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: |
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    testFiltercriteria: 'TestCategory=L1UITests'
-    uiTests: true
-    diagnosticsEnabled: true
-  continueOnError: true
+          - task: VSTest@2
+            displayName: 'Selenium UI Tests'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(System.DefaultWorkingDirectory)'
+              testFiltercriteria: 'TestCategory=L1UITests'
+              uiTests: true
+              diagnosticsEnabled: true
+            continueOnError: true
 
 - stage: QA
   displayName: QA
