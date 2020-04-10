@@ -86,7 +86,7 @@ stages:
   - deployment: DeployWeb
     displayName: Deploy Web App
     # creates an environment if it doesn't exist
-    environment: 'Dev'
+    environment: $(slot)
     strategy:
       runOnce:
         deploy:
