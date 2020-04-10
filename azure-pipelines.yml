@@ -101,6 +101,20 @@ stages:
           - download: current
             artifact: $(ArtifactName)
 
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: ARM Template Execution
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: '$(ResourceGroupName)'
+              location: 'West US 2'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
+              csmParametersFile: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
+              overrideParameters: '-CICDEngineName "$(CICDEngine)" -WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan)'
+              deploymentMode: 'Incremental'
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
@@ -160,6 +174,19 @@ stages:
           - download: current
             artifact: $(ArtifactName)
 
+          - task: AzureKeyVault@1
+            displayName: 'Azure Key Vault: PartsUnlimited'
+            inputs:
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              KeyVaultName: 'dabu-PartsUnlimitedKeys'
+              SecretsFilter: 'AppInsights-AppID-QA, AppInsights-ApiKey-QA'
+
+          - task: ms-appinsights.ReleaseAnnotation@1
+            displayName: Add release annotation to Azure Application Insights
+            inputs:
+              applicationId: '$(AppInsights-AppID-QA)'
+              apiKey: '$(AppInsights-ApiKey-QA)'
+
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
             inputs:
@@ -205,6 +232,19 @@ stages:
           
           - download: current
             artifact: $(ArtifactName)
+
+          - task: AzureKeyVault@1
+            displayName: 'Azure Key Vault: PartsUnlimited'
+            inputs:
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              KeyVaultName: 'dabu-PartsUnlimitedKeys'
+              SecretsFilter: 'AppInsights-AppID-Prod, AppInsights-ApiKey-Prod'
+
+          - task: ms-appinsights.ReleaseAnnotation@1
+            displayName: Add release annotation to Azure Application Insights
+            inputs:
+              applicationId: '$(AppInsights-AppID-Prod)'
+              apiKey: '$(AppInsights-ApiKey-Prod)'
 
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
