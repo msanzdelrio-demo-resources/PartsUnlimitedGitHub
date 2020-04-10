@@ -86,7 +86,7 @@ stages:
   - deployment: DeployWeb
     displayName: Deploy Web App
     # creates an environment if it doesn't exist
-    environment: $(slot)
+    environment: Dev
     strategy:
       runOnce:
         deploy:
@@ -115,7 +115,7 @@ stages:
                 **\*test*.dll
                 !**\*TestAdapter.dll
                 !**\obj\**
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
               testFiltercriteria: 'TestCategory=L1UITests'
               uiTests: true
               diagnosticsEnabled: true
@@ -131,7 +131,7 @@ stages:
   - deployment: DeployWeb
     displayName: Deploy Web App
     # creates an environment if it doesn't exist
-    environment: $(slot)
+    environment: QA
     strategy:
       runOnce:
         deploy:
@@ -160,7 +160,7 @@ stages:
                 **\*test*.dll
                 !**\*TestAdapter.dll
                 !**\obj\**
-              searchFolder: '$(System.DefaultWorkingDirectory)'
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
               testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
               uiTests: true
               diagnosticsEnabled: true
@@ -176,7 +176,7 @@ stages:
   - deployment: DeployWeb
     displayName: Deploy Web App
     # creates an environment if it doesn't exist
-    environment: $(slot)
+    environment: Production
     strategy:
       runOnce:
         deploy:
