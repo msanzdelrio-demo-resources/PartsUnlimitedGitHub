@@ -96,6 +96,7 @@ stages:
             artifact: $(ArtifactName)
 
           - task: AzureRmWebAppDeployment@4
+            displayName: Deploy Web App
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
@@ -106,9 +107,23 @@ stages:
               SlotName: '$(Slot)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
+- task: VSTest@2
+  displayName: 'Selenium UI Tests'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testFiltercriteria: 'TestCategory=L1UITests'
+    uiTests: true
+    diagnosticsEnabled: true
+  continueOnError: true
+
 - stage: QA
   displayName: QA
-  dependsOn: CI
+  dependsOn: Dev
   variables:
     slot: QA
 
@@ -126,6 +141,7 @@ stages:
             artifact: $(ArtifactName)
 
           - task: AzureRmWebAppDeployment@4
+            displayName: Deploy Web App
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
@@ -135,3 +151,48 @@ stages:
               ResourceGroupName: '$(ResourceGroupName)'
               SlotName: '$(Slot)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
+
+          - task: VSTest@2
+            displayName: 'Selenium UI Tests'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(System.DefaultWorkingDirectory)'
+              testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
+              uiTests: true
+              diagnosticsEnabled: true
+            continueOnError: true
+
+- stage: Production
+  displayName: Production
+  dependsOn: QA
+  variables:
+    slot: Production
+
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    # creates an environment if it doesn't exist
+    environment: $(slot)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - download: current
+            artifact: $(ArtifactName)
+
+          - task: AzureRmWebAppDeployment@4
+            displayName: Deploy Web App
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              appType: 'webApp'
+              WebAppName: 'dabu-PartsUnlimited'
+              deployToSlotOrASE: true
+              ResourceGroupName: '$(ResourceGroupName)'
+              packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
+
