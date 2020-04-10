@@ -74,7 +74,7 @@ stages:
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
     - publish: $(build.artifactstagingdirectory)
-      artifact: PartsUnlimited
+      artifact: $(ArtifactName)
 
 - stage: Dev
   displayName: Dev
@@ -93,7 +93,7 @@ stages:
           steps:
           
           - download: current
-            artifact: PartsUnlimited
+            artifact: $(ArtifactName)
 
           - task: AzureRmWebAppDeployment@4
             inputs:
@@ -104,5 +104,5 @@ stages:
               deployToSlotOrASE: true
               ResourceGroupName: '$(ResourceGroupName)'
               SlotName: '$(Slot)'
-              packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+              packageForLinux: '$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
