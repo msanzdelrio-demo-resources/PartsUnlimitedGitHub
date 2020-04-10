@@ -73,8 +73,6 @@ stages:
         TargetFolder: '$(build.artifactstagingdirectory)'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact'
-      inputs:
-        PathtoPublish: '$(build.artifactstagingdirectory)'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    - publish: $(build.artifactstagingdirectory)
+      artifact: PartsUnlimited
+
