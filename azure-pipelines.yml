@@ -76,3 +76,29 @@ stages:
     - publish: $(build.artifactstagingdirectory)
       artifact: PartsUnlimited
 
+- stage: Dev
+  displayName: Dev
+  dependsOn: CI
+  variables:
+    slot: Dev
+
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy Web App
+    # creates an environment if it doesn't exist
+    environment: 'Dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              appType: 'webApp'
+              WebAppName: 'dabu-PartsUnlimited'
+              deployToSlotOrASE: true
+              ResourceGroupName: '$(ResourceGroupName)'
+              SlotName: '$(Slot)'
+              packageForLinux: '$(System.DefaultWorkingDirectory)/PartsUnlimited/PartsUnlimited/PartsUnlimitedWebsite.zip'
