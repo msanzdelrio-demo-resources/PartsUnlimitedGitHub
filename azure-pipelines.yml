@@ -101,6 +101,19 @@ stages:
           - download: current
             artifact: $(ArtifactName)
 
+          - task: AzureKeyVault@1
+            displayName: 'Azure Key Vault: PartsUnlimited'
+            inputs:
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              KeyVaultName: 'dabu-PartsUnlimitedKeys'
+              SecretsFilter: 'AppInsights-AppID-Dev, AppInsights-ApiKey-Dev'
+
+          - task: ms-appinsights.ReleaseAnnotation@1
+            displayName: Add release annotation to Azure Application Insights
+            inputs:
+              applicationId: '$(AppInsights-AppID-Dev)'
+              apiKey: '$(AppInsights-ApiKey-Dev)'
+
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
             inputs:
