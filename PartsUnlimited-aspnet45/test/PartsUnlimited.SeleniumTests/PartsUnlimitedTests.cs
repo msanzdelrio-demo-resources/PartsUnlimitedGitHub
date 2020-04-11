@@ -77,7 +77,7 @@ namespace PartsUnlimited.SeleniumTests
         {
             var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
 
-            // go to a category that does not exist
+            // try to navigate to a category that does not exist to generate an exception
             driver.Navigate().GoToUrl($"{homeUrl}/Store/Browse?CategoryId=99");
 
             // find the 1st element
