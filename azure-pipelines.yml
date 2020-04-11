@@ -84,6 +84,7 @@ stages:
 
     - publish: $(build.artifactstagingdirectory)
       artifact: $(ArtifactName)
+      condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
 
 ###################################################################
 # Dev Stage                                                       #
