@@ -73,7 +73,7 @@ namespace PartsUnlimited.SeleniumTests
 
         [TestMethod]
         [TestCategory("L2UITests")]
-        public void BrowseAudioCategory()
+        public void BrowseCategory99()
         {
             var homeUrl = "https://dabu-partsunlimited-qa.azurewebsites.net/";
 
