@@ -91,6 +91,7 @@ stages:
 - stage: Dev
   displayName: Dev
   dependsOn: CI
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   variables:
     slot: Dev
 
@@ -168,6 +169,7 @@ stages:
 - stage: QA
   displayName: QA
   dependsOn: Dev
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   variables:
     slot: QA
 
@@ -230,6 +232,7 @@ stages:
 - stage: Production
   displayName: Production
   dependsOn: QA
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   variables:
     slot: Production
 
