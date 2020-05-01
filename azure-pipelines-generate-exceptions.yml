@@ -1,0 +1,80 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+schedules:
+- cron: "0 1 * * *"
+  displayName: Daily 1:00 AM test run
+  branches:
+    include:
+    - master
+  always: true
+
+pool:
+
+stages:
+- stage: QA
+  displayName: QA
+  dependsOn: Dev
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  variables:
+    slot: QA
+
+  jobs:
+  - deployment: RunTests
+    displayName: Rund UI Tests to generate exceptions
+    # creates an environment if it doesn't exist
+    environment: 'Daily Test Run'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - download: current
+            artifact: $(ArtifactName)
+
+          - task: VSTest@2
+            displayName: 'Test Run #1'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
+              testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
+              uiTests: true
+              testRunTitle: '01 Generate Exceptions'
+              diagnosticsEnabled: true
+            continueOnError: true
+
+          - task: VSTest@2
+            displayName: 'Test Run #3'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
+              testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
+              uiTests: true
+              testRunTitle: '02 Generate Exceptions'
+              diagnosticsEnabled: true
+            continueOnError: true
+
+          - task: VSTest@2
+            displayName: 'Test Run #3'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
+              testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
+              uiTests: true
+              testRunTitle: '03 Generate Exceptions'
+              diagnosticsEnabled: true
+            continueOnError: true
