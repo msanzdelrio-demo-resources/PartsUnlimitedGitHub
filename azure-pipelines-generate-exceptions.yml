@@ -3,21 +3,49 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-schedules:
-- cron: "0 1 * * *"
-  displayName: Daily 1:00 AM test run
-  branches:
-    include:
-    - master
-  always: true
-
 pool:
   vmImage: 'vs2017-win2016'
 
+###################################################################
+# CI Stage                                                        #
+###################################################################
 stages:
-- stage: QA
-  displayName: QA
-  dependsOn: Dev
+- stage: CI
+  jobs:
+  - job: CI    
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Automated Tests to: $(build.artifactstagingdirectory)'
+      inputs:
+        SourceFolder: '$(build.sourcesdirectory)'
+        Contents: '**\bin\$(buildConfiguration)\**'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+    - publish: $(build.artifactstagingdirectory)
+      artifact: $(ArtifactName)
+      condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+
+
+###################################################################
+# Test Stage                                                      #
+###################################################################
+- stage: Test
+  displayName: Test
+  dependsOn: CI
   condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
   variables:
     slot: QA
