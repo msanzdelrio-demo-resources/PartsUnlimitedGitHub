@@ -49,7 +49,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev
-      url: format( $BASE_URL, $ENV_NAME )   
+      url: 'https://dabu-partsunlimited-dev.azurewebsites.net/'  
     needs: CI
     steps:
       # Runs a single command using the runners shell
@@ -65,7 +65,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev
-      url: format( $BASE_URL, $ENV_NAME )   
+      url: 'https://dabu-partsunlimited-qa.azurewebsites.net/'  
     needs: Dev
     steps:
       # Runs a single command using the runners shell
