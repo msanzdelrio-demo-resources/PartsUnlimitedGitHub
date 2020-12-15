@@ -1,6 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build_And_Deploy_To_Azure
+env:
+  BASE_URL: https://dabu-partsunlimited{0}.azurewebsites.net/ 
 
 # Controls when the action will run. 
 on:
@@ -22,7 +24,7 @@ jobs:
   CI:
     # The type of runner that the job will run on
     runs-on: windows-2019
-
+    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -41,20 +43,24 @@ jobs:
   Dev:
     # The type of runner that the job will run on
     runs-on: windows-2019
+    env:
+      ENV_NAME: -Dev 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev
-      # url: ${{ https://dabu-partsunlimited-dev.azurewebsites.net }} 
+      url: ${{ format( {{ BASE_URL }}, {{ ENV_NAME }} ) }} 
     needs: CI
     steps:
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo This is Dev!
+        run: echo 'This is Dev!'
 
   QA:
     # The type of runner that the job will run on
     runs-on: windows-2019
+    env:
+      ENV_NAME: -QA
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
@@ -64,7 +70,7 @@ jobs:
     steps:
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo This is QA!
+        run: echo 'This is QA!'
 
   Production:
     # The type of runner that the job will run on
@@ -78,4 +84,4 @@ jobs:
     steps:
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo This is Production!
+        run: echo 'This is Production!'
