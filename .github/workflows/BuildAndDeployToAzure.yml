@@ -49,8 +49,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev
-      # url: ${{ format( {{ env.BASE_URL }}, {{ jobs.Dev.env.ENV_NAME }} ) }} 
-      url: ${{ env.BASE_URL }} 
+      # url: ${{ format( {{ env.BASE_URL }},  ) }} 
+      url: format( ${{ env.BASE_URL }}, $ENV_NAME )  
     needs: CI
     steps:
       # Runs a single command using the runners shell
