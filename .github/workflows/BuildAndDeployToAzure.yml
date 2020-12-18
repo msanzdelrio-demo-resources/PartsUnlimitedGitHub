@@ -64,7 +64,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
-      name: Dev
+      name: QA
       url: 'https://dabu-partsunlimited-qa.azurewebsites.net/'  
     needs: Dev
     steps:
