@@ -41,15 +41,17 @@ jobs:
           echo test, and deploy your project.
 
   Dev:
+    if: contains(github.event_name, 'push')
+    
     # The type of runner that the job will run on
     runs-on: windows-2019
     env:
-      ENV_NAME: -Dev 
+      ENV_NAME: -dev 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev
-      url: 'https://dabu-partsunlimited-dev.azurewebsites.net/'  
+      url: format(${{env.BASE_URL}}, ${{env.ENV_NAME}})
     needs: CI
     steps:
       # Runs a single command using the runners shell
@@ -57,15 +59,17 @@ jobs:
         run: echo 'This is Dev!'
 
   QA:
+    if: contains(github.event_name, 'push')
+    
     # The type of runner that the job will run on
     runs-on: windows-2019
     env:
-      ENV_NAME: -QA
+      ENV_NAME: -qa
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: QA
-      url: 'https://dabu-partsunlimited-qa.azurewebsites.net/'  
+      url: format(${{env.BASE_URL}}, ${{env.ENV_NAME}})
     needs: Dev
     steps:
       # Runs a single command using the runners shell
@@ -73,13 +77,17 @@ jobs:
         run: echo 'This is QA!'
 
   Production:
+    if: contains(github.event_name, 'push')
+    
     # The type of runner that the job will run on
     runs-on: windows-2019
+    env:
+      ENV_NAME: ${{null}} 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Production
-      url: 'https://dabu-partsunlimited.azurewebsites.net/'  
+      url: format(${{env.BASE_URL}}, ${{env.ENV_NAME}})
     needs: QA
     steps:
       # Runs a single command using the runners shell
