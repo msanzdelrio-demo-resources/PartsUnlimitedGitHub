@@ -11,6 +11,8 @@ env:
   ARM_FILE_PATH: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates'
   ARM_FILE_NAME: 'FullEnvironmentSetupMerged'
   Deployment_Name: PartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
+  # Webapp variables
+  AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
 
 # Controls when the action will run. 
 on:
@@ -37,7 +39,7 @@ jobs:
       SOLUTION_FILE_PATH: 'PartsUnlimited-aspnet45'
       SOLUTION: 'PartsUnlimited-aspnet45/PartsUnlimited.sln'
       ARTIFACT_STAGING_PATH: 'PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite'
-      ARTIFACT_STAGING_FOLDER: 'bin'
+      ARTIFACT_STAGING_FOLDER: 'bin/ArtifactStaging'
       TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin'
   
       # Configuration type to build.
@@ -74,14 +76,14 @@ jobs:
         working-directory: ${{env.GITHUB_WORKSPACE}}
         # Add additional options to the MSBuild command line here (like platform or verbosity level).
         # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-        run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:PlatformTarget=${{ env.BUILD_PLATFORM }} /p:WebPublishMethod=Package /p:SkipInvalidConfigurations=true ${{env.SOLUTION}} 
+        run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:PlatformTarget=${{ env.BUILD_PLATFORM }} /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}" ${{env.SOLUTION}} 
       
       - name: Upload Build Artifacts
 #        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@main
         with:
           name: Website
-          path: "${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
+          path: "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
 
       - name: Upload Test Artifacts
 #        if: ${{ github.event_name != 'pull_request' }}
@@ -99,8 +101,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: "Validate ARM Template"
-        uses: azure/arm-deploy@v1
         id: ValidateARMTemplate
+        uses: azure/arm-deploy@v1
         with:
          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
          resourceGroupName: ${{ env.Azure_Resource_Group }}
@@ -134,7 +136,7 @@ jobs:
 
     environment:
       name: Dev
-      url: https://dabu-partsunlimited-dev.azurewebsites.net/ 
+      url: ${{ steps.DeployWebApp.outputs.url_output }}
 
     needs: CI
     steps:
@@ -153,8 +155,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: "Deploy ARM Template"
+        id: DeployARMTemplate
         uses: azure/arm-deploy@v1
-        id: ValidateARMTemplate
         with:
          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
          resourceGroupName: ${{ env.Azure_Resource_Group }}
@@ -175,6 +177,14 @@ jobs:
         with:
           name: Website
           path: Website
+
+      - name: Deploy Azure WebApp
+        id: DeployWebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: Website/*.zip
 
       ###########################################
       # Test the Web App
@@ -200,12 +210,6 @@ jobs:
 
     needs: Dev
     steps:
-      - name: Download built artifact
-        uses: actions/download-artifact@main
-        with:
-          name: PUL_Artifacts
-          path: public
-          
       - name: "Azure login"
         uses: azure/login@v1
         with:
@@ -234,12 +238,6 @@ jobs:
 
     needs: QA
     steps:
-      - name: Download built artifact
-        uses: actions/download-artifact@main
-        with:
-          name: PUL_Artifacts
-          path: public
-          
       - name: "Azure login"
         uses: azure/login@v1
         with:
