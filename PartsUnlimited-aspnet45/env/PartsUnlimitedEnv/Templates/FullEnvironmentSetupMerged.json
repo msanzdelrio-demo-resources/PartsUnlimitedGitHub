@@ -56,8 +56,8 @@
     "PartsUnlimitedServerName": "[toLower(parameters('PUL_ServerName'))]",
     "PartsUnlimitedServerNameDev": "[concat(variables('PartsUnlimitedServerName'), 'dev')]",
     "PartsUnlimitedServerNameQA": "[concat(variables('PartsUnlimitedServerName'), 'qa')]",
-    "TAG_Dept": "eCommerce",
-    "TAG_Team": "Dev"
+    "TAG_Dept": "Sales",
+    "TAG_Team": "Development"
   },
   "resources": [
     {
