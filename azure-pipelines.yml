@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
 trigger:
-- master
+- none 
 
 pool:
   vmImage: 'vs2017-win2016'
@@ -72,7 +72,7 @@ stages:
         SourceFolder: '$(build.sourcesdirectory)'
         Contents: '**/*.json'
         TargetFolder: '$(build.artifactstagingdirectory)'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
     - task: CopyFiles@2
       displayName: 'Copy Automated Tests to: $(build.artifactstagingdirectory)'
@@ -80,11 +80,11 @@ stages:
         SourceFolder: '$(build.sourcesdirectory)'
         Contents: '**\bin\$(buildConfiguration)\**'
         TargetFolder: '$(build.artifactstagingdirectory)'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
     - publish: $(build.artifactstagingdirectory)
       artifact: $(ArtifactName)
-      condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+      condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
 
 ###################################################################
 # Dev Stage                                                       #
@@ -92,7 +92,7 @@ stages:
 - stage: Dev
   displayName: Dev
   dependsOn: CI
-  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   variables:
     slot: Dev
 
@@ -170,7 +170,7 @@ stages:
 - stage: QA
   displayName: QA
   dependsOn: Dev
-  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   variables:
     slot: QA
 
@@ -233,7 +233,7 @@ stages:
 - stage: Production
   displayName: Production
   dependsOn: QA
-  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   variables:
     slot: Production
 
