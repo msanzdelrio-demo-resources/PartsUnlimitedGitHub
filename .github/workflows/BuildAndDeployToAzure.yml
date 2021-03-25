@@ -1,6 +1,7 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build_And_Deploy_To_Azure
+###################################################################
+# Environment Variables                                           #
+###################################################################
 env:
   #ARM Template Parameters
   TAG_CICD_Engine_Name: GitHub Actions
@@ -14,7 +15,9 @@ env:
   # Webapp variables
   AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
 
-# Controls when the action will run. 
+###################################################################
+# Triggers - Controls when the action will run.                   #
+###################################################################
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -40,7 +43,8 @@ jobs:
       SOLUTION: 'PartsUnlimited-aspnet45/PartsUnlimited.sln'
       ARTIFACT_STAGING_PATH: 'PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite'
       ARTIFACT_STAGING_FOLDER: 'bin/Website'
-      TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin'
+      UNIT_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/bin'
+      UI_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin'
   
       # Configuration type to build.
       # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -78,6 +82,9 @@ jobs:
         # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
         run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:PlatformTarget=${{ env.BUILD_PLATFORM }} /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}" ${{env.SOLUTION}} 
 
+      ###########################################
+      # Upload Artifacts
+      ###########################################
       - name: Upload Build Artifacts
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@main
@@ -90,7 +97,16 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: Tests
-          path: "${{env.TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
+          path: "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
+
+      ###########################################
+      # Run Unit Tests
+      ###########################################
+      - name: Setup VSTest path
+        uses: darenm/Setup-VSTest@v1      
+        
+      - name: Run Unit Tests
+        run: vstest.console.exe "${{env.UNIT_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited.UnitTests.dll" /Platform:x64 /TestCaseFilter:"TestCategory=Unit Tests"
 
       ###########################################
       # Validate the ARM Template
@@ -220,6 +236,12 @@ jobs:
           name: Tests
           path: Tests
 
+      - name: Setup VSTest path
+        uses: darenm/Setup-VSTest@v1      
+        
+      - name: Run Level 1 UI Tests
+        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L1UITests"
+
 ###################################################################
 # QA Stage                                                        #
 ###################################################################
@@ -261,6 +283,12 @@ jobs:
         with:
           name: Tests
           path: Tests
+
+      - name: Setup VSTest path
+        uses: darenm/Setup-VSTest@v1      
+        
+      - name: Run Level 2 UI Tests
+        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L2UITests"
 
 ###################################################################
 # Production Stage                                                #
