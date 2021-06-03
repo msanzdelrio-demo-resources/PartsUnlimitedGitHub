@@ -204,6 +204,7 @@ jobs:
          parameters: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.param.json CICDEngineName="${{ env.TAG_CICD_Engine_Name }}" PUL_ServerName=${{ env.SQL_Server_Name }} PUL_DBLogin=${{ secrets.SQL_DB_LOGIN }} PUL_DBPassword=${{ secrets.SQL_DB_PASSWORD }} PUL_DBPasswordForTest=${{ secrets.SQL_DB_PASSWORD }} PUL_HostingPlanName=${{ env.Hosting_Plan_Name }} WebsiteName=${{ env.Website_Name }} 
          deploymentMode: Incremental
          deploymentName: ${{ env.Deployment_Name }}
+         continue-on-error: true
 
       - name: Azure logout
         if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}               
