@@ -185,7 +185,7 @@ namespace PartsUnlimited.Areas.Admin.Controllers
         //
         // POST: /StoreManager/RemoveProduct/5
         [HttpPost, ActionName("RemoveProduct")]
-        public async Task<ActionResult> RemoveProductConfirmed(int id)  // There is a security issue here (Demo update 6/3/2021 4:45 PM)
+        public async Task<ActionResult> RemoveProductConfirmed(int id)  // Is there a security issue here? (Demo update 6/4/2021)
         {
             Product product = db.Products.Where(a => a.ProductId == id).FirstOrDefault();
 
