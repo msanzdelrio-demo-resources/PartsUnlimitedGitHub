@@ -131,11 +131,12 @@ stages:
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-Dev, AppInsights-ApiKey-Dev'
 
-          - task: ms-appinsights.ReleaseAnnotation@1
-            displayName: Add release annotation to Azure Application Insights
-            inputs:
-              applicationId: '$(AppInsights-AppID-Dev)'
-              apiKey: '$(AppInsights-ApiKey-Dev)'
+#           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
+#          - task: ms-appinsights.ReleaseAnnotation@1
+#            displayName: Add release annotation to Azure Application Insights
+#            inputs:
+#              applicationId: '$(AppInsights-AppID-Dev)'
+#              apiKey: '$(AppInsights-ApiKey-Dev)'
 
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
@@ -194,11 +195,12 @@ stages:
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-QA, AppInsights-ApiKey-QA'
 
-          - task: ms-appinsights.ReleaseAnnotation@1
-            displayName: Add release annotation to Azure Application Insights
-            inputs:
-              applicationId: '$(AppInsights-AppID-QA)'
-              apiKey: '$(AppInsights-ApiKey-QA)'
+#           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
+#          - task: ms-appinsights.ReleaseAnnotation@1
+#            displayName: Add release annotation to Azure Application Insights
+#            inputs:
+#              applicationId: '$(AppInsights-AppID-QA)'
+#              apiKey: '$(AppInsights-ApiKey-QA)'
 
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
@@ -257,11 +259,12 @@ stages:
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-Prod, AppInsights-ApiKey-Prod'
 
-          - task: ms-appinsights.ReleaseAnnotation@1
-            displayName: Add release annotation to Azure Application Insights
-            inputs:
-              applicationId: '$(AppInsights-AppID-Prod)'
-              apiKey: '$(AppInsights-ApiKey-Prod)'
+#           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
+#          - task: ms-appinsights.ReleaseAnnotation@1
+#            displayName: Add release annotation to Azure Application Insights
+#            inputs:
+#              applicationId: '$(AppInsights-AppID-Prod)'
+#              apiKey: '$(AppInsights-ApiKey-Prod)'
 
           - task: AzureRmWebAppDeployment@4
             displayName: Deploy Web App
