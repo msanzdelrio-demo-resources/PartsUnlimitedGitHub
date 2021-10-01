@@ -1,0 +1,193 @@
+# ASP.NET
+# Test ASP.NET projects.
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+parameters:
+- name: stage
+  displayName: Stage
+  type: string
+  default: CI
+  values:
+  - CI
+  - Dev
+  - QA
+  
+trigger:
+- none 
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+###################################################################
+# CI Stage                                                        #
+###################################################################
+stages:
+- stage: CI
+  condition: eq(${{ parameters.stage }}, 'CI'))
+  jobs:
+  - job: CI    
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: VSBuild@1
+      inputs:
+        solution: '$(solution)'
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+
+    - task: VSTest@2
+      displayName: 'Test Assemblies'
+      inputs:
+        testSelector: 'testAssemblies'
+        testAssemblyVer2: |
+          **\*test*.dll
+          !**\*TestAdapter.dll
+          !**\obj\**
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        testFiltercriteria: 'TestCategory=Unit Tests'
+        runOnlyImpactedTests: false
+        runInParallel: false
+        codeCoverageEnabled: true
+        testRunTitle: '01 Unit Tests'
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+        diagnosticsEnabled: true
+      continueOnError: true
+
+###################################################################
+# Dev Stage                                                       #
+###################################################################
+- stage: Dev
+  displayName: Dev
+  condition: eq(${{ parameters.stage }}, 'Dev'))
+  variables:
+    slot: Dev
+
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy and test
+    # creates an environment if it doesn't exist
+    environment: 'Dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - download: current
+            artifact: $(ArtifactName)
+
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: ARM Template Execution
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: '$(ResourceGroupName)'
+              location: 'West US 2'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
+              csmParametersFile: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
+              overrideParameters: '-CICDEngineName "$(CICDEngine)" -WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan)'
+              deploymentMode: 'Incremental'
+
+          - task: AzureKeyVault@1
+            displayName: 'Azure Key Vault: PartsUnlimited'
+            inputs:
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              KeyVaultName: 'dabu-PartsUnlimitedKeys'
+              SecretsFilter: 'AppInsights-AppID-Dev, AppInsights-ApiKey-Dev'
+
+          - task: AzureRmWebAppDeployment@4
+            displayName: Deploy Web App
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              appType: 'webApp'
+              WebAppName: 'dabu-PartsUnlimited'
+              deployToSlotOrASE: true
+              ResourceGroupName: '$(ResourceGroupName)'
+              SlotName: '$(slot)'
+              packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
+
+          - task: VSTest@2
+            displayName: 'Selenium UI Tests'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
+              testFiltercriteria: 'TestCategory=L1UITests'
+              uiTests: true
+              testRunTitle: '02 Level 1 UI Tests'
+              diagnosticsEnabled: true
+            continueOnError: true
+
+###################################################################
+# QA Stage                                                        #
+###################################################################
+- stage: QA
+  displayName: QA
+  condition: eq(${{ parameters.stage }}, 'QA'))
+  variables:
+    slot: QA
+
+  jobs:
+  - deployment: DeployWeb
+    displayName: Deploy and test
+    # creates an environment if it doesn't exist
+    environment: 'QA'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          
+          - download: current
+            artifact: $(ArtifactName)
+
+          - task: AzureKeyVault@1
+            displayName: 'Azure Key Vault: PartsUnlimited'
+            inputs:
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              KeyVaultName: 'dabu-PartsUnlimitedKeys'
+              SecretsFilter: 'AppInsights-AppID-QA, AppInsights-ApiKey-QA'
+
+          - task: AzureRmWebAppDeployment@4
+            displayName: Deploy Web App
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              appType: 'webApp'
+              WebAppName: 'dabu-PartsUnlimited'
+              deployToSlotOrASE: true
+              ResourceGroupName: '$(ResourceGroupName)'
+              SlotName: $(slot)
+              packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
+
+          - task: VSTest@2
+            displayName: 'Selenium UI Tests'
+            inputs:
+              testSelector: 'testAssemblies'
+              testAssemblyVer2: |
+                **\*test*.dll
+                !**\*TestAdapter.dll
+                !**\obj\**
+              searchFolder: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimited-aspnet45/test'
+              testFiltercriteria: 'TestCategory=L1UITests|TestCategory=L2UITests'
+              uiTests: true
+              testRunTitle: '03 Level 2 UI Tests'
+              diagnosticsEnabled: true
+            continueOnError: true
+
