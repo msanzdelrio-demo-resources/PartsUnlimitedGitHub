@@ -28,7 +28,7 @@ variables:
 ###################################################################
 stages:
 - stage: CI
-  condition: eq(${{ parameters.stage }}, 'CI')
+  condition: if (eq(${{ parameters.stage }}, 'CI'))
   jobs:
   - job: CI    
     steps:
@@ -69,7 +69,7 @@ stages:
 ###################################################################
 - stage: Dev
   displayName: Dev
-  condition: eq(${{ parameters.stage }}, 'Dev')
+  condition: if (eq(${{ parameters.stage }}, 'Dev'))
   variables:
     slot: Dev
 
@@ -140,7 +140,7 @@ stages:
 ###################################################################
 - stage: QA
   displayName: QA
-  condition: eq(${{ parameters.stage }}, 'QA')
+  condition: if (eq(${{ parameters.stage }}, 'QA'))
   variables:
     slot: QA
 
