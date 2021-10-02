@@ -12,6 +12,7 @@ env:
   ARM_FILE_PATH: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates'
   ARM_FILE_NAME: 'FullEnvironmentSetupMerged'
   Deployment_Name: PartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
+  AZURE_DEVOPS_URL: 'https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub'
   # Webapp variables
   AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
 
@@ -100,29 +101,6 @@ jobs:
           path: "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
 
       ###########################################
-      # Upload a Release to be used by 
-      # Azure Pipelines
-      ###########################################
-      - name: GH Release Website
-        # You may pin to the exact commit or the version.
-        # uses: softprops/action-gh-release@6034af24fba4e5a8e975aaa6056554efe4c794d0
-        uses: softprops/action-gh-release@v0.1.13
-        with:
-          tag_name: "${{env.Deployment_Name}}.Website"
-          files: |
-            "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}/PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite/bin/**"
-
-      - name: GH Release Test
-        # You may pin to the exact commit or the version.
-        # uses: softprops/action-gh-release@6034af24fba4e5a8e975aaa6056554efe4c794d0
-        uses: softprops/action-gh-release@v0.1.13
-        with:
-          tag_name: "${{env.Deployment_Name}}.Test"
-          files: |
-            "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin/**"
-            "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/bin/**"
-
-      ###########################################
       # Run Unit Tests
       ###########################################
       - name: Setup VSTest path
@@ -130,6 +108,40 @@ jobs:
         
       - name: Run Unit Tests
         run: vstest.console.exe "${{env.UNIT_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited.UnitTests.dll" /Platform:x64 /TestCaseFilter:"TestCategory=Unit Tests"
+
+      ###########################################
+      # Run unit tests via Azure Pipelines
+      ###########################################
+      - name: Run unit tests via Azure Pipelines
+        uses: Azure/pipelines@v1
+        with:
+          azure-devops-project-url: ${{env.AZURE_DEVOPS_URL}}
+          azure-pipeline-name: 'PartsUnlimited Automated Tests ONLY'
+          azure-devops-token: "${{ secrets.ADO_PERSONAL_ACCESS_TOKEN }}"
+          azure-pipeline-variables:  '{"stage": "CI"}'
+          
+      ###########################################
+      # Upload a Release to be used by 
+      # Azure Pipelines
+      ###########################################
+      #- name: GH Release Website
+      #  # You may pin to the exact commit or the version.
+      #  # uses: softprops/action-gh-release@6034af24fba4e5a8e975aaa6056554efe4c794d0
+      #  uses: softprops/action-gh-release@v0.1.13
+      #  with:
+      #    tag_name: "${{env.Deployment_Name}}.Website"
+      #    files: |
+      #      "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}/PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite/bin/**"
+
+      #- name: GH Release Test
+      #  # You may pin to the exact commit or the version.
+      #  # uses: softprops/action-gh-release@6034af24fba4e5a8e975aaa6056554efe4c794d0
+      #  uses: softprops/action-gh-release@v0.1.13
+      #  with:
+      #    tag_name: "${{env.Deployment_Name}}.Test"
+      #    files: |
+      #      "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin/**"
+      #      "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/bin/**"
 
       ###########################################
       # Validate the ARM Template
