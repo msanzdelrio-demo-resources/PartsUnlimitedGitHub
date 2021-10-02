@@ -117,7 +117,7 @@ jobs:
         with:
           azure-devops-project-url: ${{env.AZURE_DEVOPS_URL}}
           azure-pipeline-name: 'PartsUnlimited Automated Tests ONLY'
-          azure-devops-token: "${{ secrets.ADO_PERSONAL_ACCESS_TOKEN }}"
+          azure-devops-token: "${{ secrets.ADO_PIPELINES_PERSONAL_ACCESS_TOKEN }}"
       #    azure-pipeline-variables:  '{"stage": "CI"}'
 
       ###########################################
