@@ -108,10 +108,11 @@ jobs:
         # uses: softprops/action-gh-release@6034af24fba4e5a8e975aaa6056554efe4c794d0
         uses: softprops/action-gh-release@v0.1.13
         with:
-          tag_name: "${{env.GITHUB_WORKFLOW}}.${{env.GITHUB_RUN_ID}}.${{env.GITHUB_RUN_NUMBER}}"
+          tag_name: "Test1"
+          #tag_name: "${{env.GITHUB_WORKFLOW}}.${{env.GITHUB_RUN_ID}}.${{env.GITHUB_RUN_NUMBER}}"
           files: |
-            "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
-            "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
+            "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}/**"
+            "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/**"
 
       ###########################################
       # Run Unit Tests
