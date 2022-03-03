@@ -130,7 +130,7 @@ stages:
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-Dev, AppInsights-ApiKey-Dev'
               RunAsPreJob: false
