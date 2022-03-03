@@ -25,14 +25,17 @@ stages:
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'ARM Template Validation'
       inputs:
-        azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
         subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
+        action: 'Create Or Update Resource Group'
         resourceGroupName: '$(ResourceGroupName)'
         location: 'West US 2'
+        templateLocation: 'Linked artifact'
         csmFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json'
         csmParametersFile: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json'
         overrideParameters: '-WebsiteName $(WebsiteName) -PUL_ServerName $(ServerName)  -PUL_HostingPlanName $(HostingPlan) -CICDEngineName "$(CICDEngine)"'
-        deploymentMode: Validation
+        deploymentMode: 'Validation'
     
     - task: NuGetToolInstaller@1
 
@@ -113,7 +116,7 @@ stages:
             displayName: ARM Template Execution
             inputs:
               deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureResourceManagerConnection: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               subscriptionId: '33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b'
               action: 'Create Or Update Resource Group'
               resourceGroupName: '$(ResourceGroupName)'
@@ -127,9 +130,10 @@ stages:
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-Dev, AppInsights-ApiKey-Dev'
+              RunAsPreJob: false
 
 #           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
 #          - task: ms-appinsights.ReleaseAnnotation@1
@@ -142,7 +146,7 @@ stages:
             displayName: Deploy Web App
             inputs:
               ConnectionType: 'AzureRM'
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               appType: 'webApp'
               WebAppName: 'dabu-PartsUnlimited'
               deployToSlotOrASE: true
@@ -192,9 +196,10 @@ stages:
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-QA, AppInsights-ApiKey-QA'
+              RunAsPreJob: false
 
 #           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
 #          - task: ms-appinsights.ReleaseAnnotation@1
@@ -207,12 +212,12 @@ stages:
             displayName: Deploy Web App
             inputs:
               ConnectionType: 'AzureRM'
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               appType: 'webApp'
               WebAppName: 'dabu-PartsUnlimited'
               deployToSlotOrASE: true
               ResourceGroupName: '$(ResourceGroupName)'
-              SlotName: $(slot)
+              SlotName: '$(slot)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
           - task: VSTest@2
@@ -257,9 +262,10 @@ stages:
           - task: AzureKeyVault@1
             displayName: 'Azure Key Vault: PartsUnlimited'
             inputs:
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               KeyVaultName: 'dabu-PartsUnlimitedKeys'
               SecretsFilter: 'AppInsights-AppID-Prod, AppInsights-ApiKey-Prod'
+              RunAsPreJob: false
 
 #           Replace with CLI commands as discussed here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/annotations
 #          - task: ms-appinsights.ReleaseAnnotation@1
@@ -272,10 +278,8 @@ stages:
             displayName: Deploy Web App
             inputs:
               ConnectionType: 'AzureRM'
-              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited'
+              azureSubscription: 'AzureDevOpsCommunity dabu-PartsUnlimited 2022 03 03'
               appType: 'webApp'
               WebAppName: 'dabu-PartsUnlimited'
-              deployToSlotOrASE: false
-              ResourceGroupName: '$(ResourceGroupName)'
               packageForLinux: '$(Pipeline.Workspace)/$(ArtifactName)/PartsUnlimitedWebsite.zip'
 
