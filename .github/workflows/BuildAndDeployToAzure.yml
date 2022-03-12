@@ -13,7 +13,7 @@ env:
   ARM_FILE_NAME: 'FullEnvironmentSetupMerged'
   Deployment_Name: PartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
   AZURE_DEVOPS_URL: 'https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub'
-  LOAD_TEST_CONFIG_FILE: "PartsUnlimited-aspnet45/test/PartsUnlimited.LoadTests/dabu-PartsUnlimitedLoadTest"
+  LOAD_TEST_CONFIG_FILE: "dabu-PartsUnlimitedLoadTest"
   LOAD_TEST_RESOURCE: "dabu-PartsUnlimited"
   # Webapp variables
   AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
@@ -320,7 +320,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           name: LoadTests
-          path: "${{env.LOAD_TESTS_PATH}}"
+          path: LoadTests
 
       - name: "Azure login"
         uses: azure/login@v1
@@ -331,7 +331,7 @@ jobs:
       - name: Azure Load Testing
         uses: azure/load-testing@v1
         with:
-          loadTestConfigFile: ${{ env.LOAD_TEST_CONFIG_FILE }}-QA.yaml
+          loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}-QA.yaml"
           loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
           resourceGroup: ${{ env.Azure_Resource_Group }}
           env: |
@@ -392,7 +392,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           name: LoadTests
-          path: "${{env.LOAD_TESTS_PATH}}"
+          path: LoadTests
 
       - name: "Azure login"
         uses: azure/login@v1
@@ -403,7 +403,7 @@ jobs:
       - name: Azure Load Testing
         uses: azure/load-testing@v1
         with:
-          loadTestConfigFile: ${{ env.LOAD_TEST_CONFIG_FILE }}.yaml
+          loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}.yaml"
           loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
           resourceGroup: ${{ env.Azure_Resource_Group }}
           env: |
