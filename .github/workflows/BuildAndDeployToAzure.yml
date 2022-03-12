@@ -253,7 +253,7 @@ jobs:
 ###################################################################
 # Dev Playwright Test Stage                                       #
 ###################################################################
-  Dev_Playwright_Test:
+  Dev_Playwright_Tests:
     if: contains(github.event_name, 'push')
     name: Dev Playwright Tests
     
@@ -296,7 +296,7 @@ jobs:
       name: QA
       url: ${{ steps.DeployWebApp.outputs.webapp-url }}
 
-    needs: Dev
+    needs: [Dev, Dev_Playwright_Tests]
     steps:
       ###########################################
       # Deploy the Web App
@@ -318,7 +318,7 @@ jobs:
 ###################################################################
 # QA Playwright Test Stage                                        #
 ###################################################################
-  QA_Functional_Test:
+  QA_Playwright_Tests:
     if: contains(github.event_name, 'push')
     name: QA Playwright Tests
     
@@ -350,7 +350,7 @@ jobs:
 ###################################################################
 # QA Load Test Stage                                              #
 ###################################################################
-  QA_Load_Test:
+  QA_Load_Tests:
     if: contains(github.event_name, 'push')
     name: QA Load Tests
     
@@ -419,7 +419,7 @@ jobs:
       name: Production
       url: ${{ steps.DeployWebApp.outputs.webapp-url }}
 
-    needs: [QA_Functional_Test, QA_Load_Test]
+    needs: [QA_Playwright_Tests, QA_Load_Tests]
 
     steps:
       ###########################################
@@ -442,7 +442,7 @@ jobs:
 ###################################################################
 # Production Load Test Stage                                      #
 ###################################################################
-  Production_Load_Test:
+  Production_Load_Tests:
     if: contains(github.event_name, 'push')
     name: Production Load Tests
     
