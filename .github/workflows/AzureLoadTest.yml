@@ -6,7 +6,7 @@ name: Run_Azure_Load_Tests
 ###################################################################
 env:
   AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
-  LOAD_TEST_CONFIG_FILE: "PartsUnlimited-aspnet45/test/PartsUnlimited.LoadTests/dabu-PartsUnlimitedLoadTest.jmx"
+  LOAD_TEST_CONFIG_FILE: "PartsUnlimited-aspnet45/test/PartsUnlimited.LoadTests/dabu-PartsUnlimitedLoadTest"
   LOAD_TEST_RESOURCE: "dabu-PartsUnlimited"
   Azure_Resource_Group: dabu-PartsUnlimited
 
@@ -23,10 +23,12 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+###################################################################
+# QA Stage                                                #
+###################################################################
+  QA:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-2019
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,7 +44,49 @@ jobs:
       - name: Azure Load Testing
         uses: azure/load-testing@v1
         with:
-          loadTestConfigFile: ${{ env.LOAD_TEST_CONFIG_FILE }}
+          loadTestConfigFile: ${{ env.LOAD_TEST_CONFIG_FILE }}-QA.yaml
+          loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
+          resourceGroup: ${{ env.Azure_Resource_Group }}
+          env: |
+            [
+              {
+              "name": "webapp",
+              "value": "${{ env.AZURE_WEBAPP_NAME }}-QA.azurewebsites.net"
+              }
+            ]          
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: loadTestResults-QA
+          path: ${{ github.workspace }}/loadTest
+          
+      - name: Azure logout
+        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+        run: |
+          az logout
+
+###################################################################
+# Production Stage                                                #
+###################################################################
+  Production:
+    # The type of runner that the job will run on
+    runs-on: windows-2019
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: "Azure login"
+        uses: azure/login@v1
+        continue-on-error: false
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Azure Load Testing
+        uses: azure/load-testing@v1
+        with:
+          loadTestConfigFile: ${{ env.LOAD_TEST_CONFIG_FILE }}.yaml
           loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
           resourceGroup: ${{ env.Azure_Resource_Group }}
           env: |
