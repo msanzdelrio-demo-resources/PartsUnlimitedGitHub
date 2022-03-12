@@ -434,7 +434,7 @@ jobs:
     environment:
       name: Production
 
-    needs: QA
+    needs: Production
     steps:
       ###########################################
       # Load Test the Web App
