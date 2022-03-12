@@ -18,8 +18,9 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-vscode.vscode-node-azure-pack",		
 		"github.vscode-pull-request-github",
+		"ms-vscode.vscode-node-azure-pack",		
+		"ms-playwright.playwright",
 		"bierner.markdown-preview-github-styles",
 		"ms-dotnettools.vscode-dotnet-runtime",
 		"ms-dotnettools.csharp"
