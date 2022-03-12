@@ -4,4 +4,4 @@ testPlan: dabu-PartsUnlimitedLoadTest.jmx
 description: Parts Unlimited Production Post-Deployment Run
 engineInstances: 5
 failureCriteria:
-  - avg(response_time_ms) > 1000
+  - avg(response_time_ms) > 600
