@@ -48,6 +48,7 @@ jobs:
       ARTIFACT_STAGING_FOLDER: 'bin/Website'
       UNIT_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/bin'
       UI_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin'
+      LOAD_TESTS_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.LoadTests'
   
       # Configuration type to build.
       # You can convert this to a build matrix if you need coverage of multiple configuration types.
@@ -101,6 +102,13 @@ jobs:
         with:
           name: Tests
           path: "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
+
+      - name: Upload Load Test Artifacts
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@main
+        with:
+          name: LoadTests
+          path: "${{env.LOAD_TESTS_PATH}}"
 
       ###########################################
       # Run Unit Tests
@@ -308,6 +316,12 @@ jobs:
       ###########################################
       # Load Test the Web App
       ###########################################
+      - name: Download load test artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: LoadTests
+          path: "${{env.LOAD_TESTS_PATH}}"
+
       - name: "Azure login"
         uses: azure/login@v1
         continue-on-error: false
@@ -374,6 +388,12 @@ jobs:
       ###########################################
       # Load Test the Web App
       ###########################################
+      - name: Download load test artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: LoadTests
+          path: "${{env.LOAD_TESTS_PATH}}"
+
       - name: "Azure login"
         uses: azure/login@v1
         continue-on-error: false
