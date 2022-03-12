@@ -258,7 +258,7 @@ jobs:
     name: Dev Playwright Tests
     
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-2019
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
@@ -277,7 +277,7 @@ jobs:
 
       - name: Setup VSTest path
         uses: darenm/Setup-VSTest@v1      
-        continue-on-error: false
+        continue-on-error: true
         
 #      - name: Run Level 1 UI Tests
 #        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L1UITests"
@@ -323,7 +323,7 @@ jobs:
     name: QA Playwright Tests
     
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-2019
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
@@ -342,7 +342,7 @@ jobs:
 
       - name: Setup VSTest path
         uses: darenm/Setup-VSTest@v1      
-        continue-on-error: false
+        continue-on-error: true
         
 #      - name: Run Level 2 UI Tests
 #        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L2UITests"
