@@ -419,7 +419,7 @@ jobs:
       name: Production
       url: ${{ steps.DeployWebApp.outputs.webapp-url }}
 
-    needs: [QA_Playwright_Tests, QA_Load_Tests]
+    needs: QA_Playwright_Tests
 
     steps:
       ###########################################
