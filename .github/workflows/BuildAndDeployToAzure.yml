@@ -272,7 +272,7 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        continue-on-error: true
+        continue-on-error: false
         run: npx playwright test PlaywrightTests/PartsUnlimited-Dev.spec.ts
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v2
