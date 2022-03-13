@@ -102,6 +102,14 @@ jobs:
         with:
           name: PlaywrightTests
           path: "${{env.UI_TESTS_STAGING_PATH}}"
+      - name: Upload NPM Files
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@main
+        with:
+          name: NPMFiles
+          path: |
+            package-lock.json
+            package.json
 
       - name: Upload Load Test Artifacts
         if: ${{ github.event_name != 'pull_request' }}
@@ -274,6 +282,10 @@ jobs:
         with:
           name: PlaywrightTests
           path: PlaywrightTests
+      - name: Download NPM Files artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: NPMFiles
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -350,6 +362,10 @@ jobs:
         with:
           name: PlaywrightTests
           path: PlaywrightTests
+      - name: Download NPM Files artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: NPMFiles
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
