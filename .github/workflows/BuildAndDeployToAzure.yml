@@ -262,7 +262,8 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - uses: actions/checkout@v2
+      - name: Get all test files
+        uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -334,7 +335,8 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - uses: actions/checkout@v2
+      - name: Get all test files
+        uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
