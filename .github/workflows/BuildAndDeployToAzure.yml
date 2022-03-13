@@ -96,6 +96,22 @@ jobs:
           name: Website
           path: "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
 
+      - name: Upload Playwright Test Artifacts
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@main
+        with:
+          name: PlaywrightTests
+          path: "${{env.UI_TESTS_STAGING_PATH}}"
+      - name: Upload Playwright Test Config Artifacts
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@main
+        with:
+          name: PlaywrightTestConfig
+          path: |
+            package-lock.json
+            package.json
+            playwright.config.ts
+            
       - name: Upload Load Test Artifacts
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@main
@@ -262,8 +278,15 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - name: Get all test files
-        uses: actions/checkout@v2
+      - name: Download Playwright Test artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: PlaywrightTests
+          path: PlaywrightTests
+      - name: Download Playwright Test Config artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: PlaywrightTestConfig
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
@@ -335,8 +358,19 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - name: Get all test files
-        uses: actions/checkout@v2
+      - name: Download Playwright Test artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: PlaywrightTests
+          path: PlaywrightTests
+      - name: Download Playwright Test Config artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: PlaywrightTestConfig
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
