@@ -273,7 +273,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         continue-on-error: false
-        run: npx playwright test PlaywrightTests/PartsUnlimited-Dev.spec.ts
+        # Only run the L0 tests
+        run: npx playwright test PlaywrightTests/PartsUnlimited-L0AndL1.spec.ts --grep @LEVEL_0
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v2
         if: always()
@@ -349,7 +350,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         continue-on-error: true
-        run: npx playwright test PlaywrightTests/PartsUnlimited-QA.spec.ts
+        # Run all levels of tests (L0 & L1)
+        run: npx playwright test PlaywrightTests/PartsUnlimited-L0AndL1.spec.ts
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v2
         if: always()
