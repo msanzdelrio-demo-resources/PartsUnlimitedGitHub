@@ -274,7 +274,7 @@ jobs:
       - name: Run Playwright tests
         continue-on-error: false
         # Only run the L0 tests
-        run: npx playwright test PlaywrightTests/PartsUnlimited-L0AndL1.spec.ts --grep @LEVEL_0
+        run: npx playwright test PlaywrightTests/PartsUnlimited-L0AndL1.spec.ts --grep @LEVEL_1
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v2
         if: always()
