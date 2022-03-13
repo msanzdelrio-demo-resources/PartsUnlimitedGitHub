@@ -47,7 +47,7 @@ jobs:
       ARTIFACT_STAGING_PATH: 'PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite'
       ARTIFACT_STAGING_FOLDER: 'bin/Website'
       UNIT_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/bin'
-      UI_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/bin'
+      UI_TESTS_STAGING_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.PlaywrightTests'
       LOAD_TESTS_PATH: 'PartsUnlimited-aspnet45/test/PartsUnlimited.LoadTests'
   
       # Configuration type to build.
@@ -96,12 +96,12 @@ jobs:
           name: Website
           path: "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
 
-      - name: Upload Test Artifacts
+      - name: Upload Playwright Test Artifacts
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@main
         with:
-          name: Tests
-          path: "${{env.UI_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}"
+          name: PlaywrightTests
+          path: "${{env.UI_TESTS_STAGING_PATH}}"
 
       - name: Upload Load Test Artifacts
         if: ${{ github.event_name != 'pull_request' }}
@@ -269,18 +269,28 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - name: Download test artifacts
+      - name: Download Playwright test artifacts
         uses: actions/download-artifact@main
         with:
-          name: Tests
-          path: Tests
-
-      - name: Setup VSTest path
-        uses: darenm/Setup-VSTest@v1      
-        continue-on-error: true
-        
-#      - name: Run Level 1 UI Tests
-#        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L1UITests"
+          name: PlaywrightTests
+          path: PlaywrightTests
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test PlaywrightTests/PartsUnlimited-Dev.spec.ts
+      - name: Upload Playwright Test Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Dev-playwright-report
+          path: playwright-report/
+          retention-days: 30
 
 ###################################################################
 # QA Stage                                                        #
@@ -334,18 +344,28 @@ jobs:
       ###########################################
       # Test the Web App
       ###########################################
-      - name: Download test artifacts
+      - name: Download Playwright test artifacts
         uses: actions/download-artifact@main
         with:
-          name: Tests
-          path: Tests
-
-      - name: Setup VSTest path
-        uses: darenm/Setup-VSTest@v1      
-        continue-on-error: true
-        
-#      - name: Run Level 2 UI Tests
-#        run: vstest.console.exe "${{env.GITHUB_WORKSPACE}}/Tests/*test*.dll" /Platform:x64 /TestCaseFilter:"TestCategory=L2UITests"
+          name: PlaywrightTests
+          path: PlaywrightTests
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test PlaywrightTests/PartsUnlimited-QA.spec.ts
+      - name: Upload Playwright Test Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: QA-playwright-report
+          path: playwright-report/
+          retention-days: 30
 
 ###################################################################
 # QA Load Test Stage                                              #
