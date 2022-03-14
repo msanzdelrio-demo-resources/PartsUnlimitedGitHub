@@ -253,11 +253,11 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: Dev_Tests
 
     needs: Dev
+
     steps:
       ###########################################
       # Test the Web App
@@ -291,8 +291,7 @@ jobs:
     
     # The type of runner that the job will run on
     runs-on: windows-2019
- 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
     environment:
       name: QA
       url: ${{ steps.DeployWebApp.outputs.webapp-url }}
@@ -326,11 +325,11 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     environment:
       name: QA_Tests
 
     needs: QA
+
     steps:
       ###########################################
       # Test the Web App
