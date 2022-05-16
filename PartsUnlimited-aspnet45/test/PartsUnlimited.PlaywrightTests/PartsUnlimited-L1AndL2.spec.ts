@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
 const baseURL = 'https://dabu-partsunlimited-dev.azurewebsites.net';
-const subsidiaryName = 'a Contoso subsidiary';
+const subsidiaryName = 'a Fabrikam subsidiary';
 const categories = ['1','2','3','4','5','99'];
 test.beforeEach(async ({ page }) => {
     await page.goto(baseURL);
