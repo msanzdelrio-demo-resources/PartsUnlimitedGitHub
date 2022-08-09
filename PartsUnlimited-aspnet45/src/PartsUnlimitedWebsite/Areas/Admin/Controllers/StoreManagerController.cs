@@ -185,7 +185,7 @@ namespace PartsUnlimited.Areas.Admin.Controllers
         //
         // POST: /StoreManager/RemoveProduct/5
         [HttpPost, ActionName("RemoveProduct")]
-        public async Task<ActionResult> RemoveProductConfirmed(int id)  // FabContosorikam Demo update 7/11/2022
+        public async Task<ActionResult> RemoveProductConfirmed(int id)  // Fabrikam Demo update 8/9/2022
         {
             Product product = db.Products.Where(a => a.ProductId == id).FirstOrDefault();
 
