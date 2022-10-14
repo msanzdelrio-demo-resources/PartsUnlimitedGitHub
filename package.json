@@ -16,6 +16,6 @@
   },
   "homepage": "https://github.com/DemoOrgGHECDaveBurnisonMS/PartsUnlimitedGitHub#readme",
   "devDependencies": {
-    "@playwright/test": "^1.19.2"
+    "@playwright/test": "^1.27.1"
   }
 }
