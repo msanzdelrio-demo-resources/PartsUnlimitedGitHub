@@ -24,7 +24,10 @@
 		"ms-playwright.playwright",
 		"bierner.markdown-preview-github-styles",
 		"ms-dotnettools.vscode-dotnet-runtime",
-		"ms-dotnettools.csharp"
+		"ms-dotnettools.csharp",
+		"MS-SarifVSCode.sarif-viewer",
+		"ms-vsliveshare.vsliveshare",
+		"ms-vsliveshare.vsliveshare-audio"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
