@@ -24,8 +24,6 @@
 		"ms-playwright.playwright",
 		"bierner.markdown-preview-github-styles",
 		"ms-dotnettools.vscode-dotnet-runtime",
-		"ms-dotnettools.csharp",
-		"MS-SarifVSCode.sarif-viewer",
 		"ms-vsliveshare.vsliveshare",
 		"ms-vsliveshare.vsliveshare-audio"
 	],
