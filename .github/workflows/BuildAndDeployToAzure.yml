@@ -3,7 +3,10 @@ name: Build_And_Deploy_To_Azure
 # Environment Variables                                           #
 ###################################################################
 env:
-  #ARM Template Parameters
+  # Open IDC Connect variables
+  ACTIONS_ID_TOKEN_REQUEST_URL: 'TBD'
+  ACTIONS_ID_TOKEN_REQUEST_TOKEN: 'TBD'
+  # ARM Template Parameters
   TAG_CICD_Engine_Name: GitHub Actions
   Azure_Resource_Group: dabu-PartsUnlimited
   SQL_Server_Name: dabu-PartsUnlimited
@@ -55,7 +58,10 @@ jobs:
       # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
       BUILD_PLATFORM: 'anycpu'
       BUILD_CONFIGURATION: Release
-  
+
+    permissions:
+      id-token: write
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       ###########################################
@@ -137,11 +143,14 @@ jobs:
           path: "${{env.ARM_FILE_PATH}}"
           key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
 
-      - name: "Azure login"
+      - name: OIDC Login to Azure
         if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          enable-AzPSSession: true
 
       - name: "Validate ARM Template"
         if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}        
@@ -180,6 +189,9 @@ jobs:
       name: Dev
       url: ${{ steps.DeployWebApp.outputs.webapp-url }}
 
+    permissions:
+      id-token: write
+
     needs: CI
     steps:
       ###########################################
@@ -202,11 +214,14 @@ jobs:
           path: "${{env.ARM_FILE_PATH}}"
           key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
 
-      - name: "Azure login"
-        if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}        
+      - name: OIDC Login to Azure
+        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          enable-AzPSSession: true
 
       - name: "Deploy ARM Template"
         id: DeployARMTemplate
@@ -373,6 +388,9 @@ jobs:
     environment:
       name: QA_Tests
 
+    permissions:
+      id-token: write
+
     needs: QA
     steps:
       ###########################################
@@ -384,11 +402,14 @@ jobs:
           name: LoadTests
           path: LoadTests
 
-      - name: "Azure login"
+      - name: OIDC Login to Azure
         uses: azure/login@v1
         continue-on-error: false
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          enable-AzPSSession: true
 
       - name: Azure Load Testing
         uses: azure/load-testing@v1
@@ -465,6 +486,9 @@ jobs:
     environment:
       name: Production_Tests
 
+    permissions:
+      id-token: write
+
     needs: Production
     steps:
       ###########################################
@@ -476,11 +500,14 @@ jobs:
           name: LoadTests
           path: LoadTests
 
-      - name: "Azure login"
+      - name: OIDC Login to Azure
         uses: azure/login@v1
         continue-on-error: false
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          enable-AzPSSession: true
 
       - name: Azure Load Testing
         uses: azure/load-testing@v1
