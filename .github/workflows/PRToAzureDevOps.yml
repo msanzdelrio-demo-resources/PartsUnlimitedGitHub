@@ -16,7 +16,7 @@ jobs:
       env:
         ado_token: '${{ secrets.ADO_PERSONAL_ACCESS_TOKEN }}'   
         github_token: '${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}'    
-        ado_organization: 'daveburnisonms'
+        ado_organization: 'PartnersDemoMS'
         ado_project: 'PartsUnlimitedGitHub'
         ado_wit: 'Pull Request' 
         ado_new_state: 'New'
