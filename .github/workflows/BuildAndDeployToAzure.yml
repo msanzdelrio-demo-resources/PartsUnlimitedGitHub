@@ -9,17 +9,17 @@ env:
   # ARM Template Parameters
   TAG_CICD_Engine_Name: GitHub Actions
   Azure_Resource_Group: dabu-PartsUnlimited
-  SQL_Server_Name: dabu-PartsUnlimited
-  Website_Name: dabu-PartsUnlimited
-  Hosting_Plan_Name: dabu-PartsUnlimited
+  SQL_Server_Name: dabu-msrPartsUnlimited
+  Website_Name: dabu-msrPartsUnlimited
+  Hosting_Plan_Name: dabu-msrPartsUnlimited
   ARM_FILE_PATH: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates'
   ARM_FILE_NAME: 'FullEnvironmentSetupMerged'
-  Deployment_Name: PartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
+  Deployment_Name: msrPartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
   AZURE_DEVOPS_URL: 'https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub'
   LOAD_TEST_CONFIG_FILE: "dabu-PartsUnlimitedLoadTest"
   LOAD_TEST_RESOURCE: "dabu-PartsUnlimited"
   # Webapp variables
-  AZURE_WEBAPP_NAME: 'dabu-PartsUnlimited'
+  AZURE_WEBAPP_NAME: 'dabu-msrPartsUnlimited'
 
 ###################################################################
 # Triggers - Controls when the action will run.                   #
