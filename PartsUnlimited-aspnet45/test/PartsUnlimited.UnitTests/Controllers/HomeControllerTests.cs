@@ -28,7 +28,7 @@ namespace PartsUnlimited.UnitTests.Controllers
             ViewResult result = controller.Index() as ViewResult;
 
             // assert
-            
+            var secret = "custom_0101010101";
             Assert.IsNotNull(result);
             var model = result.Model as HomeViewModel;
             Assert.IsNotNull(model);
