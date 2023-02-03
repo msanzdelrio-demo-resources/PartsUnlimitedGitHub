@@ -15,7 +15,7 @@ env:
   ARM_FILE_PATH: 'PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates'
   ARM_FILE_NAME: 'FullEnvironmentSetupMerged'
   Deployment_Name: msrPartsUnlimited.${{ github.workflow }}.${{ github.run_number }}
-  AZURE_DEVOPS_URL: 'https://dev.azure.com/daveburnisonms/PartsUnlimitedGitHub'
+  AZURE_DEVOPS_URL: 'https://dev.azure.com/PartnersDemoMS/PartsUnlimitedGitHub'
   LOAD_TEST_CONFIG_FILE: "dabu-PartsUnlimitedLoadTest"
   LOAD_TEST_RESOURCE: "dabu-PartsUnlimited"
   # Webapp variables
