@@ -29,6 +29,7 @@ namespace PartsUnlimited.UnitTests.Controllers
 
             // assert
             var secret = "custom_0101010101";
+            var secret2 = "custom_0000000000";
             Assert.IsNotNull(result);
             var model = result.Model as HomeViewModel;
             Assert.IsNotNull(model);
