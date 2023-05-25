@@ -71,52 +71,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v1
+      # - name: Add MSBuild to PATH
+      #   uses: microsoft/setup-msbuild@v1
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v2
-        env:
-          cache-name: Cache-NuGet-Packages
-        with:
-          path: "PartsUnlimited-aspnet45/packages"
-          key: ${{ env.cache-name }}-${{ hashFiles('PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite/packages.config') }}-${{ hashFiles('PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/packages.config') }}-${{ hashFiles('PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/packages.config') }}
+      # - name: Cache NuGet packages
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: Cache-NuGet-Packages
+      #   with:
+      #     path: "PartsUnlimited-aspnet45/packages"
+      #     key: ${{ env.cache-name }}-${{ hashFiles('PartsUnlimited-aspnet45/src/PartsUnlimitedWebsite/packages.config') }}-${{ hashFiles('PartsUnlimited-aspnet45/test/PartsUnlimited.SeleniumTests/packages.config') }}-${{ hashFiles('PartsUnlimited-aspnet45/test/PartsUnlimited.UnitTests/packages.config') }}
 
-      - name: Restore NuGet packages
-        working-directory: ${{env.GITHUB_WORKSPACE}}
-        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      # - name: Restore NuGet packages
+      #   working-directory: ${{env.GITHUB_WORKSPACE}}
+      #   run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-      - name: Build
-        working-directory: ${{env.GITHUB_WORKSPACE}}
-        # Add additional options to the MSBuild command line here (like platform or verbosity level).
-        # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-        run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:PlatformTarget=${{ env.BUILD_PLATFORM }} /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}" ${{env.SOLUTION}} 
+      # - name: Build
+      #   working-directory: ${{env.GITHUB_WORKSPACE}}
+      #   # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      #   # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      #   run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:PlatformTarget=${{ env.BUILD_PLATFORM }} /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}" ${{env.SOLUTION}} 
 
-      ###########################################
-      # Upload Artifacts
-      ###########################################
-      - name: Upload Build Artifacts
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@main
-        with:
-          name: Website
-          path: "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
+      # ###########################################
+      # # Upload Artifacts
+      # ###########################################
+      # - name: Upload Build Artifacts
+      #   if: ${{ github.event_name != 'pull_request' }}
+      #   uses: actions/upload-artifact@main
+      #   with:
+      #     name: Website
+      #     path: "${{env.GITHUB_WORKSPACE}}/${{env.ARTIFACT_STAGING_PATH}}/${{env.ARTIFACT_STAGING_FOLDER}}"
 
-      - name: Upload Load Test Artifacts
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@main
-        with:
-          name: LoadTests
-          path: "${{env.LOAD_TESTS_PATH}}"
+      # - name: Upload Load Test Artifacts
+      #   if: ${{ github.event_name != 'pull_request' }}
+      #   uses: actions/upload-artifact@main
+      #   with:
+      #     name: LoadTests
+      #     path: "${{env.LOAD_TESTS_PATH}}"
 
       ###########################################
       # Run Unit Tests
       ###########################################
-      - name: Setup VSTest path
-        uses: darenm/Setup-VSTest@v1      
+      # - name: Setup VSTest path
+      #   uses: darenm/Setup-VSTest@v1      
         
-      - name: Run Unit Tests
-        run: vstest.console.exe "${{env.UNIT_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited.UnitTests.dll" /Platform:x64 /TestCaseFilter:"TestCategory=Unit Tests"
+      # - name: Run Unit Tests
+      #   run: vstest.console.exe "${{env.UNIT_TESTS_STAGING_PATH}}/${{env.BUILD_CONFIGURATION}}/PartsUnlimited.UnitTests.dll" /Platform:x64 /TestCaseFilter:"TestCategory=Unit Tests"
 
       ###########################################
       # Run unit tests via Azure Pipelines
@@ -132,49 +132,49 @@ jobs:
       ###########################################
       # Validate the ARM Template
       ###########################################
-      - name: Cache ARM Template
-        # Use a cache of the ARM Templates and the related hash values to determine if the ARM Temlates changed.
-        # If they did not change, we will not execute the following actions. 
-        id: CacheARMTemplateCI
-        uses: actions/cache@v2
-        env:
-          cache-name: Cache-ARMTemplateCI
-        with:
-          path: "${{env.ARM_FILE_PATH}}"
-          key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
+      # - name: Cache ARM Template
+      #   # Use a cache of the ARM Templates and the related hash values to determine if the ARM Temlates changed.
+      #   # If they did not change, we will not execute the following actions. 
+      #   id: CacheARMTemplateCI
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: Cache-ARMTemplateCI
+      #   with:
+      #     path: "${{env.ARM_FILE_PATH}}"
+      #     key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
 
-      - name: OIDC Login to Azure
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-          enable-AzPSSession: true
+      # - name: OIDC Login to Azure
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+      #   uses: azure/login@v1
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+      #     enable-AzPSSession: true
 
-      - name: "Validate ARM Template"
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}        
-        id: ValidateARMTemplate
-        uses: azure/arm-deploy@v1
-        with:
-         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-         resourceGroupName: ${{ env.Azure_Resource_Group }}
-         template: "${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.json"
-         parameters: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.param.json CICDEngineName="${{ env.TAG_CICD_Engine_Name }}" PUL_ServerName=${{ env.SQL_Server_Name }} PUL_DBLogin=${{ secrets.SQL_DB_LOGIN }} PUL_DBPassword=${{ secrets.SQL_DB_PASSWORD }} PUL_DBPasswordForTest=${{ secrets.SQL_DB_PASSWORD }} PUL_HostingPlanName=${{ env.Hosting_Plan_Name }} WebsiteName=${{ env.Website_Name }} 
-         deploymentMode: Validate
-         deploymentName: ${{ env.Deployment_Name }}
+      # - name: "Validate ARM Template"
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}        
+      #   id: ValidateARMTemplate
+      #   uses: azure/arm-deploy@v1
+      #   with:
+      #    subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      #    resourceGroupName: ${{ env.Azure_Resource_Group }}
+      #    template: "${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.json"
+      #    parameters: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.param.json CICDEngineName="${{ env.TAG_CICD_Engine_Name }}" PUL_ServerName=${{ env.SQL_Server_Name }} PUL_DBLogin=${{ secrets.SQL_DB_LOGIN }} PUL_DBPassword=${{ secrets.SQL_DB_PASSWORD }} PUL_DBPasswordForTest=${{ secrets.SQL_DB_PASSWORD }} PUL_HostingPlanName=${{ env.Hosting_Plan_Name }} WebsiteName=${{ env.Website_Name }} 
+      #    deploymentMode: Validate
+      #    deploymentName: ${{ env.Deployment_Name }}
 
-      - name: Azure logout
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
-        run: |
-          az logout
+      # - name: Azure logout
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+      #   run: |
+      #     az logout
   
-      - name: Upload ARM Artifacts
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@main
-        with:
-          name: ARM_Templates
-          path: "${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.*"
+      # - name: Upload ARM Artifacts
+      #   if: ${{ github.event_name != 'pull_request' }}
+      #   uses: actions/upload-artifact@main
+      #   with:
+      #     name: ARM_Templates
+      #     path: "${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.*"
 
 ###################################################################
 # Dev Stage                                                       #
@@ -194,69 +194,71 @@ jobs:
 
     needs: CI
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       ###########################################
       # Deploy the ARM Template
       ###########################################
-      - name: Download ARM Files
-        uses: actions/download-artifact@main
-        with:
-          name: ARM_Templates
-          path: ${{ env.ARM_FILE_PATH }}
+      # - name: Download ARM Files
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: ARM_Templates
+      #     path: ${{ env.ARM_FILE_PATH }}
           
-      - name: Cache ARM Template
-        # Use a cache of the ARM Templates and the related hash values to determine if the ARM Temlates changed.
-        # If they did not change, we will not execute the following actions. 
-        id: CacheARMTemplateDev
-        uses: actions/cache@v2
-        env:
-          cache-name: Cache-ARMTemplateDev
-        with:
-          path: "${{env.ARM_FILE_PATH}}"
-          key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
+      # - name: Cache ARM Template
+      #   # Use a cache of the ARM Templates and the related hash values to determine if the ARM Temlates changed.
+      #   # If they did not change, we will not execute the following actions. 
+      #   id: CacheARMTemplateDev
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: Cache-ARMTemplateDev
+      #   with:
+      #     path: "${{env.ARM_FILE_PATH}}"
+      #     key: ${{env.cache-name}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.json')}}-${{hashFiles('PartsUnlimited-aspnet45/env/PartsUnlimitedEnv/Templates/FullEnvironmentSetupMerged.param.json')}}
 
-      - name: OIDC Login to Azure
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-          enable-AzPSSession: true
+      # - name: OIDC Login to Azure
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+      #   uses: azure/login@v1
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+      #     enable-AzPSSession: true
 
-      - name: "Deploy ARM Template"
-        id: DeployARMTemplate
-        if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}        
-        continue-on-error: true
-        uses: azure/arm-deploy@v1
-        with:
-         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-         resourceGroupName: ${{ env.Azure_Resource_Group }}
-         template: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.json
-         parameters: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.param.json CICDEngineName="${{ env.TAG_CICD_Engine_Name }}" PUL_ServerName=${{ env.SQL_Server_Name }} PUL_DBLogin=${{ secrets.SQL_DB_LOGIN }} PUL_DBPassword=${{ secrets.SQL_DB_PASSWORD }} PUL_DBPasswordForTest=${{ secrets.SQL_DB_PASSWORD }} PUL_HostingPlanName=${{ env.Hosting_Plan_Name }} WebsiteName=${{ env.Website_Name }} 
-         deploymentMode: Incremental
-         deploymentName: ${{ env.Deployment_Name }}
+      # - name: "Deploy ARM Template"
+      #   id: DeployARMTemplate
+      #   if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}        
+      #   continue-on-error: true
+      #   uses: azure/arm-deploy@v1
+      #   with:
+      #    subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      #    resourceGroupName: ${{ env.Azure_Resource_Group }}
+      #    template: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.json
+      #    parameters: ${{ env.ARM_FILE_PATH }}/${{ env.ARM_FILE_NAME }}.param.json CICDEngineName="${{ env.TAG_CICD_Engine_Name }}" PUL_ServerName=${{ env.SQL_Server_Name }} PUL_DBLogin=${{ secrets.SQL_DB_LOGIN }} PUL_DBPassword=${{ secrets.SQL_DB_PASSWORD }} PUL_DBPasswordForTest=${{ secrets.SQL_DB_PASSWORD }} PUL_HostingPlanName=${{ env.Hosting_Plan_Name }} WebsiteName=${{ env.Website_Name }} 
+      #    deploymentMode: Incremental
+      #    deploymentName: ${{ env.Deployment_Name }}
 
-      - name: Azure logout
-        if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}               
-        run: |
-          az logout
+      # - name: Azure logout
+      #   if: ${{steps.CacheARMTemplateDev.outputs.cache-hit==false}}               
+      #   run: |
+      #     az logout
 
-      ###########################################
-      # Deploy the Web App
-      ###########################################
-      - name: Download build artifacts
-        uses: actions/download-artifact@main
-        with:
-          name: Website
-          path: Website
+      # ###########################################
+      # # Deploy the Web App
+      # ###########################################
+      # - name: Download build artifacts
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: Website
+      #     path: Website
 
-      - name: Deploy Azure WebApp
-        id: DeployWebApp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: Website
+      # - name: Deploy Azure WebApp
+      #   id: DeployWebApp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      #     package: Website
 
 ###################################################################
 # Dev Playwright Test Stage                                       #
@@ -282,21 +284,21 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        continue-on-error: false
-        # Only run the L1 tests
-        run: npx playwright test PlaywrightTests/PartsUnlimited-L1AndL2.spec.ts --grep @LEVEL_1
-      - name: Upload Playwright Test Report
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Dev-playwright-report
-          path: playwright-report/
-          retention-days: 30
+      # - name: Install dependencies
+      #   run: npm ci
+      # - name: Install Playwright
+      #   run: npx playwright install --with-deps
+      # - name: Run Playwright tests
+      #   continue-on-error: false
+      #   # Only run the L1 tests
+      #   run: npx playwright test PlaywrightTests/PartsUnlimited-L1AndL2.spec.ts --grep @LEVEL_1
+      # - name: Upload Playwright Test Report
+      #   uses: actions/upload-artifact@v2
+      #   if: always()
+      #   with:
+      #     name: Dev-playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
 
 ###################################################################
 # QA Stage                                                        #
@@ -313,22 +315,23 @@ jobs:
 
     needs: [Dev, Dev_Playwright_Tests]
     steps:
+      - uses: actions/checkout@v2
       ###########################################
       # Deploy the Web App
       ###########################################
-      - name: Download build artifacts
-        uses: actions/download-artifact@main
-        with:
-          name: Website
-          path: Website
+      # - name: Download build artifacts
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: Website
+      #     path: Website
 
-      - name: Deploy Azure WebApp
-        id: DeployWebApp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: Website
+      # - name: Deploy Azure WebApp
+      #   id: DeployWebApp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      #     package: Website
 
 ###################################################################
 # QA Playwright Test Stage                                        #
@@ -350,29 +353,29 @@ jobs:
       # Test the Web App
       ###########################################
       - uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14.x'
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        continue-on-error: true
-        # Run all levels of tests (L1 & L2)
-        run: npx playwright test PlaywrightTests/PartsUnlimited-L1AndL2.spec.ts
-      - name: Upload Playwright Test Report
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: QA-playwright-report
-          path: playwright-report/
-          retention-days: 30
+      # - name: Setup Node
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '14.x'
+      # - name: Setup Node
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '14.x'
+      # - name: Install dependencies
+      #   run: npm ci
+      # - name: Install Playwright
+      #   run: npx playwright install --with-deps
+      # - name: Run Playwright tests
+      #   continue-on-error: true
+      #   # Run all levels of tests (L1 & L2)
+      #   run: npx playwright test PlaywrightTests/PartsUnlimited-L1AndL2.spec.ts
+      # - name: Upload Playwright Test Report
+      #   uses: actions/upload-artifact@v2
+      #   if: always()
+      #   with:
+      #     name: QA-playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
 
 ###################################################################
 # QA Load Test Stage                                              #
@@ -396,47 +399,48 @@ jobs:
       ###########################################
       # Load Test the Web App
       ###########################################
-      - name: Download load test artifacts
-        uses: actions/download-artifact@main
-        with:
-          name: LoadTests
-          path: LoadTests
+      - uses: actions/checkout@v2
+      # - name: Download load test artifacts
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: LoadTests
+      #     path: LoadTests
 
-      - name: OIDC Login to Azure
-        uses: azure/login@v1
-        continue-on-error: false
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-          enable-AzPSSession: true
+      # - name: OIDC Login to Azure
+      #   uses: azure/login@v1
+      #   continue-on-error: false
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+      #     enable-AzPSSession: true
 
-      - name: Azure Load Testing
-        uses: azure/load-testing@v1
-        continue-on-error: true
-        with:
-          loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}-QA.yaml"
-          loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
-          resourceGroup: ${{ env.Azure_Resource_Group }}
-          env: |
-            [
-              {
-              "name": "webapp",
-              "value": "${{ env.AZURE_WEBAPP_NAME }}-QA.azurewebsites.net"
-              }
-            ]          
+      # - name: Azure Load Testing
+      #   uses: azure/load-testing@v1
+      #   continue-on-error: true
+      #   with:
+      #     loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}-QA.yaml"
+      #     loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
+      #     resourceGroup: ${{ env.Azure_Resource_Group }}
+      #     env: |
+      #       [
+      #         {
+      #         "name": "webapp",
+      #         "value": "${{ env.AZURE_WEBAPP_NAME }}-QA.azurewebsites.net"
+      #         }
+      #       ]          
       
-      - name: Upload Load Test Results
-        uses: actions/upload-artifact@v2
-        continue-on-error: true
-        with:
-          name: loadTestResults-QA
-          path: ${{ github.workspace }}/loadTest
+      # - name: Upload Load Test Results
+      #   uses: actions/upload-artifact@v2
+      #   continue-on-error: true
+      #   with:
+      #     name: loadTestResults-QA
+      #     path: ${{ github.workspace }}/loadTest
           
-      - name: Azure logout
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
-        run: |
-          az logout
+      # - name: Azure logout
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+      #   run: |
+      #     az logout
 
 ###################################################################
 # Production Stage                                                #
@@ -458,19 +462,20 @@ jobs:
       ###########################################
       # Deploy the Web App
       ###########################################
-      - name: Download build artifacts
-        uses: actions/download-artifact@main
-        with:
-          name: Website
-          path: Website
+      - uses: actions/checkout@v2
+      # - name: Download build artifacts
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: Website
+      #     path: Website
 
-      - name: Deploy Azure WebApp
-        id: DeployWebApp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: Website
+      # - name: Deploy Azure WebApp
+      #   id: DeployWebApp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      #     package: Website
 
 ###################################################################
 # Production Load Test Stage                                      #
@@ -494,44 +499,45 @@ jobs:
       ###########################################
       # Load Test the Web App
       ###########################################
-      - name: Download load test artifacts
-        uses: actions/download-artifact@main
-        with:
-          name: LoadTests
-          path: LoadTests
+      - uses: actions/checkout@v2
+      # - name: Download load test artifacts
+      #   uses: actions/download-artifact@main
+      #   with:
+      #     name: LoadTests
+      #     path: LoadTests
 
-      - name: OIDC Login to Azure
-        uses: azure/login@v1
-        continue-on-error: false
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-          enable-AzPSSession: true
+      # - name: OIDC Login to Azure
+      #   uses: azure/login@v1
+      #   continue-on-error: false
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+      #     enable-AzPSSession: true
 
-      - name: Azure Load Testing
-        uses: azure/load-testing@v1
-        continue-on-error: true
-        with:
-          loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}.yaml"
-          loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
-          resourceGroup: ${{ env.Azure_Resource_Group }}
-          env: |
-            [
-              {
-              "name": "webapp",
-              "value": "${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
-              }
-            ]          
+      # - name: Azure Load Testing
+      #   uses: azure/load-testing@v1
+      #   continue-on-error: true
+      #   with:
+      #     loadTestConfigFile: "LoadTests/${{ env.LOAD_TEST_CONFIG_FILE }}.yaml"
+      #     loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
+      #     resourceGroup: ${{ env.Azure_Resource_Group }}
+      #     env: |
+      #       [
+      #         {
+      #         "name": "webapp",
+      #         "value": "${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+      #         }
+      #       ]          
       
-      - name: Upload Load Test Results
-        uses: actions/upload-artifact@v2
-        continue-on-error: true
-        with:
-          name: loadTestResults
-          path: ${{ github.workspace }}/loadTest
+      # - name: Upload Load Test Results
+      #   uses: actions/upload-artifact@v2
+      #   continue-on-error: true
+      #   with:
+      #     name: loadTestResults
+      #     path: ${{ github.workspace }}/loadTest
           
-      - name: Azure logout
-        if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
-        run: |
-          az logout
+      # - name: Azure logout
+      #   if: ${{steps.CacheARMTemplateCI.outputs.cache-hit==false}}
+      #   run: |
+      #     az logout
