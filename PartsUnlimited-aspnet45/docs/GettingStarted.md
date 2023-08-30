@@ -1,5 +1,7 @@
 # Getting Started#
 
+Adding an update
+
 ## Set up your machine ##
 1. Install [Visual Studio 2013 Update 4 or 2015 RC](http://www.visualstudio.com) 
 2. Install [Microsoft Web Platform Installer](http://www.microsoft.com/web/downloads/platform.aspx)
